@@ -1,0 +1,8 @@
+{
+  "id": "acme.example-plugin",
+  "name": "Example Plugin",
+  "version": "1.0.0",
+  "contractVersion": "1.0",
+  "entry": "./dist/index.js",
+  "webComponentTag": "acme-example-plugin"
+}

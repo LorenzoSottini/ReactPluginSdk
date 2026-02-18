@@ -1,0 +1,31 @@
+{
+  "name": "@acme/plugin-react",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "./src/index.ts",
+  "module": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "import": "./src/index.ts"
+    }
+  },
+  "files": [
+    "src"
+  ],
+  "scripts": {
+    "check:ts": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@acme/plugin-contracts": "workspace:*"
+  },
+  "peerDependencies": {
+    "react": "catalog:"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.7",
+    "typescript": "catalog:"
+  }
+}

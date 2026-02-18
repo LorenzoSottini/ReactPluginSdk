@@ -1,0 +1,22 @@
+{
+  "name": "example-plugin",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite --port 5174",
+    "check:ts": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@acme/plugin-react": "workspace:*",
+    "@acme/plugin-runtime": "workspace:*",
+    "react": "catalog:",
+    "react-dom": "catalog:"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.14",
+    "@vitejs/plugin-react": "4.0.0",
+    "typescript": "catalog:",
+    "vite": "^5.0.0"
+  }
+}

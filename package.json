@@ -1,0 +1,12 @@
+{
+  "name": "acme-plugin-sdk",
+  "private": true,
+  "version": "0.1.0",
+  "packageManager": "pnpm@10.0.0",
+  "scripts": {
+    "dev:host": "pnpm --filter host run dev",
+    "dev": "pnpm -r --parallel dev",
+    "build": "pnpm -r build",
+    "check:ts": "pnpm -r run check:ts"
+  }
+}
