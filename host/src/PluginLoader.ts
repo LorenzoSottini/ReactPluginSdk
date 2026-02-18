@@ -33,7 +33,8 @@ export async function loadPluginFromManifest(options: {
     contractVersion: manifest.contractVersion,
     user: options.user,
     services: options.services,
-  };
+    manifest: manifest,
+  } satisfies PluginContext<typeof manifest.type>;
 
   options.mount.replaceChildren(pluginEl);
   return pluginEl;

@@ -22,7 +22,11 @@ export const PLUGIN_TAGS = {
 } as const satisfies Record<PluginTypes, string>;
 export type PluginTags = (typeof PLUGIN_TAGS)[PluginTypes];
 
-/** Manifest comune a tutti i plugin */
+/**
+ * Manifest statico del plugin:
+ * metadati e entry ESM usati dall'host per discovery e caricamento.
+ * Non rappresenta stato runtime del plugin.
+ */
 export type PluginManifest<PT extends PluginTypes = PluginTypes> = {
   type: PT;
   id: string;
@@ -32,8 +36,9 @@ export type PluginManifest<PT extends PluginTypes = PluginTypes> = {
   entry: string;
 };
 
-export type PluginContext = {
+export type PluginContext<PT extends PluginTypes = PluginTypes> = {
   contractVersion: ContractVersion;
+  manifest: PluginManifest<PT>;
   user: HostUser;
   services: HostServices;
 };

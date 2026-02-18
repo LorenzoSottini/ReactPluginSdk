@@ -2,6 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import type { PluginDefinition } from "@acme/plugin-react";
 import type {
+  PluginContext,
   PluginTypes,
   PluginTags,
   PluginElementWithCtx,
@@ -14,30 +15,35 @@ const PLUGIN_ID_ATTR = "plugin-id";
  * Registro dei plugin Definiti
  * Per evitare che la define definisca più volte lo stesso custom tag
  */
-const pluginRegistry = new Map<PluginTypes, Map<string, PluginDefinition>>();
+const pluginRegistry = new Map<
+  PluginTypes,
+  Map<string, PluginDefinition<PluginTypes>>
+>();
 
 /** Fornisce il plugin dal registry */
 function getPlugin(
   type: PluginTypes,
   id: string,
-): PluginDefinition | undefined {
+): PluginDefinition<PluginTypes> | undefined {
   return pluginRegistry.get(type)?.get(id);
 }
 
 /** Registra la Definizione del plugin sul registry  */
-function ensureTypeRegistry(type: PluginTypes): Map<string, PluginDefinition> {
+function ensureTypeRegistry(
+  type: PluginTypes,
+): Map<string, PluginDefinition<any>> {
   let typeRegistry = pluginRegistry.get(type);
   if (!typeRegistry) {
-    typeRegistry = new Map<string, PluginDefinition>();
+    typeRegistry = new Map<string, PluginDefinition<any>>();
     pluginRegistry.set(type, typeRegistry);
   }
   return typeRegistry;
 }
 
 /** Funzione che si occupa di Definire i WebComponent con rispettivo tag */
-export function registerReactPluginWebComponent(options: {
-  plugin: PluginDefinition;
-}) {
+export function registerReactPluginWebComponent<
+  PT extends PluginTypes,
+>(options: { plugin: PluginDefinition<PT> }) {
   const type = options.plugin.type;
   const tag: PluginTags = PLUGIN_TAGS[type];
 
@@ -64,10 +70,17 @@ export function registerReactPluginWebComponent(options: {
         throw new Error(`Missing ${PLUGIN_ID_ATTR} attribute!`);
       }
 
-      const plugin = getPlugin(type, pluginId);
+      const plugin = getPlugin(type, pluginId) as
+        | PluginDefinition<PT>
+        | undefined;
       if (!plugin) {
         throw new Error(
           `Plugin not registered for type "${type}" and id "${pluginId}"`,
+        );
+      }
+      if (ctx.manifest.type !== type) {
+        throw new Error(
+          `Context type mismatch: expected "${type}", got "${ctx.manifest.type}"`,
         );
       }
 
@@ -83,7 +96,7 @@ export function registerReactPluginWebComponent(options: {
       // Esegue il setup opzionale del plugin.
       // Se activate ritorna una funzione, viene salvata per l'unmount.
       if (plugin.activate) {
-        const result = plugin.activate(ctx);
+        const result = plugin.activate(ctx as PluginContext<PT>);
         if (typeof result === "function") this.cleanup = result;
       }
     }

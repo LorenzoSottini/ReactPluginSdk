@@ -21,7 +21,7 @@ export type PluginDefinition<PT extends PluginTypes = PluginTypes> = {
    * - riceve il ctx host
    * - puo ritornare una funzione di cleanup, eseguita allo smontaggio
    */
-  activate?: (ctx: PluginContext) => void | (() => void);
+  activate?: (ctx: PluginContext<PT>) => void | (() => void);
 };
 
 export function definePlugin<PT extends PluginTypes>(
@@ -31,4 +31,4 @@ export function definePlugin<PT extends PluginTypes>(
 }
 
 export { PluginProvider, usePluginContext } from "./plugin-context";
-export { useServices, useUser } from "./hooks";
+export * from "./hooks";

@@ -7,3 +7,7 @@ export function useServices() {
 export function useUser() {
   return usePluginContext().user;
 }
+
+export function useManifest() {
+  return usePluginContext().manifest;
+}

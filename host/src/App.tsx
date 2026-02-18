@@ -5,7 +5,7 @@ import { clearPluginMount, loadPluginFromManifest } from "./PluginLoader";
 
 const PLUGIN_MANIFEST_URL = "/plugin/plugin.manifest.json";
 
-const user = { id: "host-user-1", displayName: "Host User" };
+const user = { id: "host-user-1", displayName: "Lorenzo" };
 
 function App() {
   const mountRef = useRef<HTMLDivElement>(null);
