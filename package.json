@@ -4,7 +4,7 @@
   "version": "0.1.0",
   "packageManager": "pnpm@10.0.0",
   "scripts": {
-    "dev": "pnpm -r --parallel --filter host --filter example-plugin run dev",
+    "dev": "pnpm -r --parallel --filter host --filter example-plugin --filter example-plugin-react-peer run dev",
     "dev:host": "pnpm --filter host run dev",
     "dev:POC": "pnpm -r --parallel dev",
     "build": "pnpm -r build",

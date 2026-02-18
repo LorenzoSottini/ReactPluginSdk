@@ -4,12 +4,13 @@ import { HostServiceInstance } from "./Service";
 import { clearPluginMount, loadPluginFromManifest } from "./PluginLoader";
 
 const PLUGIN_MANIFEST_URL = "/plugin/plugin.manifest.json";
+const PLUGIN_PEER_MANIFEST_URL = "/peer_plugin/plugin.manifest.json";
 
 const user = { id: "host-user-1", displayName: "Lorenzo" };
 
-function App() {
-  const mountRef = useRef<HTMLDivElement>(null);
-  const [status, setStatus] = useState("idle");
+const PluginExample = (props: { manifestUrl: string }) => {
+  const hostElementRef = useRef<HTMLDivElement>(null);
+  const [status, setStatus] = useState("waiting");
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -20,10 +21,10 @@ function App() {
         setStatus("loading");
         setError(null);
 
-        if (disposed || !mountRef.current) return;
+        if (disposed || !hostElementRef.current) return;
         await loadPluginFromManifest({
-          manifestUrl: PLUGIN_MANIFEST_URL,
-          mount: mountRef.current,
+          manifestUrl: props.manifestUrl,
+          mount: hostElementRef.current,
           user: user,
           services: HostServiceInstance,
         });
@@ -40,17 +41,28 @@ function App() {
 
     return () => {
       disposed = true;
-      if (mountRef.current) clearPluginMount(mountRef.current);
+      if (hostElementRef.current) clearPluginMount(hostElementRef.current);
     };
   }, []);
 
   return (
+    <div>
+      <p>Status: {status}</p>
+      {error && <p style={{ color: "crimson" }}>Error: {error}</p>}
+      <div ref={hostElementRef} />
+    </div>
+  );
+};
+
+function App() {
+  return (
     <>
       <h1>Plugin Host</h1>
       <p className="read-the-docs">Integrazione plugin via dynamic import</p>
-      <p>Status: {status}</p>
-      {error && <p style={{ color: "crimson" }}>Error: {error}</p>}
-      <div ref={mountRef} />
+      <div style={{ display: "flex", flexDirection: "row", gap: "16px" }}>
+        <PluginExample manifestUrl={PLUGIN_MANIFEST_URL} />
+        <PluginExample manifestUrl={PLUGIN_PEER_MANIFEST_URL} />
+      </div>
     </>
   );
 }

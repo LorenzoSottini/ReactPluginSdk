@@ -1,0 +1,25 @@
+{
+  "name": "example-plugin-react-peer",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite --port 5175",
+    "check:ts": "tsc -p tsconfig.json --noEmit"
+  },
+  "peerDependencies": {
+    "react": "19.2.0",
+    "react-dom": "19.2.0",
+    "@types/react": "^19.2.14"
+  },
+  "dependencies": {
+    "@acme/plugin-react": "workspace:*",
+    "@acme/plugin-runtime": "workspace:*",
+    "@acme/plugin-contracts": "workspace:*"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "4.0.0",
+    "typescript": "catalog:",
+    "vite": "^5.0.0"
+  }
+}

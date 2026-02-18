@@ -1,0 +1,9 @@
+{
+  "$schema": "../../packages/plugin-manifest.schema.json",
+  "type": "ROUTE",
+  "id": "acme.react-peer",
+  "name": "Plugin React peer 7kb",
+  "version": "1.0.0",
+  "contractVersion": "0.1.0",
+  "entry": "./dist/index.js"
+}
