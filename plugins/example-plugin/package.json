@@ -10,6 +10,7 @@
   "dependencies": {
     "@acme/plugin-react": "workspace:*",
     "@acme/plugin-runtime": "workspace:*",
+    "@acme/plugin-contracts": "workspace:*",
     "react": "catalog:",
     "react-dom": "catalog:"
   },

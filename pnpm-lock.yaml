@@ -121,6 +121,9 @@ importers:
 
   plugins/example-plugin:
     dependencies:
+      '@acme/plugin-contracts':
+        specifier: workspace:*
+        version: link:../../packages/plugin-contracts
       '@acme/plugin-react':
         specifier: workspace:*
         version: link:../../packages/plugin-react

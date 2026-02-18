@@ -1,10 +1,12 @@
 import { definePlugin } from "@acme/plugin-react";
 import { registerReactPluginWebComponent } from "@acme/plugin-runtime";
+import { CONTRACT_VERSION, PLUGIN_TYPES } from "@acme/plugin-contracts";
 import { PluginRoot } from "./PluginRoot";
 
 const plugin = definePlugin({
+  type: PLUGIN_TYPES.WIDGET,
   id: "acme.example-plugin",
-  contractVersion: "1.0",
+  contractVersion: CONTRACT_VERSION,
   Root: PluginRoot,
   activate(ctx) {
     ctx.services.toast.show("Plugin activated");
@@ -13,6 +15,5 @@ const plugin = definePlugin({
 });
 
 registerReactPluginWebComponent({
-  tag: "acme-example-plugin",
   plugin,
 });
