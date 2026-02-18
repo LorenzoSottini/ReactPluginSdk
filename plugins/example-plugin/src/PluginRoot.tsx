@@ -10,7 +10,7 @@ export function PluginRoot() {
 
   return (
     <div style={{ padding: 10, border: "1px solid #ccc" }}>
-      <h3>Esempio di Plugin</h3>
+      <h3>{manifest.name}</h3>
       <p> Utente from Host: {user.displayName}</p>
 
       <label>Dettagli del manifest from Host</label>

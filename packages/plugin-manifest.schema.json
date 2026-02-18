@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://acme.com/schemas/plugin-manifest.schema.json",
+  "title": "Plugin Manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["type", "id", "name", "version", "contractVersion", "entry"],
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "format": "uri-reference",
+      "description": "Riferimento opzionale allo schema JSON"
+    },
+    "type": {
+      "type": "string",
+      "enum": ["ROUTE", "WIDGET", "COMMAND"],
+      "description": "Tipo di plugin"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(\\.[a-z0-9-]+)+$",
+      "description": "Identificativo univoco del plugin (es. acme.example-plugin)"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 100
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-[0-9A-Za-z-.]+)?(?:\\+[0-9A-Za-z-.]+)?$"
+    },
+    "contractVersion": {
+      "type": "string",
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-[0-9A-Za-z-.]+)?(?:\\+[0-9A-Za-z-.]+)?$"
+    },
+    "entry": {
+      "type": "string",
+      "pattern": "^\\.\\/.*\\.js$",
+      "description": "Entry point ESM del plugin"
+    }
+  }
+}

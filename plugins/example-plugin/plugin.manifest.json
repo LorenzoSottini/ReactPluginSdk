@@ -1,7 +1,8 @@
 {
+  "$schema": "../../packages/plugin-manifest.schema.json",
   "type": "WIDGET",
   "id": "acme.example-plugin",
-  "name": "Example Plugin",
+  "name": "Plugin react in bundle 945kb",
   "version": "1.0.0",
   "contractVersion": "0.1.0",
   "entry": "./dist/index.js"
