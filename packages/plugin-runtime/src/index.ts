@@ -11,14 +11,30 @@ import { PLUGIN_TAGS } from "@acme/plugin-contracts";
 import { PluginProvider } from "@acme/plugin-react";
 
 const PLUGIN_ID_ATTR = "plugin-id";
-/**
- * Registro dei plugin Definiti
- * Per evitare che la define definisca più volte lo stesso custom tag
- */
-const pluginRegistry = new Map<
+const GLOBAL_PLUGIN_REGISTRY_KEY = "__acme_plugin_registry__";
+
+type PluginRegistry = Map<
   PluginTypes,
   Map<string, PluginDefinition<PluginTypes>>
->();
+>;
+
+/**
+ * Registro dei plugin Definiti
+ * Permette di evitare che la define definisca più volte lo stesso custom tag
+ * Definito su globalThis per evitare evitare che la presenza di piu bundle di plugin creino registry differenti
+ */
+function getGlobalPluginRegistry(): PluginRegistry {
+  const runtimeGlobal = globalThis as typeof globalThis & {
+    [GLOBAL_PLUGIN_REGISTRY_KEY]?: PluginRegistry;
+  };
+
+  runtimeGlobal[GLOBAL_PLUGIN_REGISTRY_KEY] ??= new Map();
+
+  return runtimeGlobal[GLOBAL_PLUGIN_REGISTRY_KEY];
+}
+
+/** Registro condiviso tra bundle multipli sullo stesso host runtime. */
+const pluginRegistry = getGlobalPluginRegistry();
 
 /** Fornisce il plugin dal registry */
 function getPlugin(
@@ -28,27 +44,26 @@ function getPlugin(
   return pluginRegistry.get(type)?.get(id);
 }
 
-/** Registra la Definizione del plugin sul registry  */
-function ensureTypeRegistry(
-  type: PluginTypes,
-): Map<string, PluginDefinition<any>> {
+/** Registra la Definizione del plugin sul registry, assicurandosi che il Map per Type si presente o meno */
+function setPluginInTypeRegistry(plugin: PluginDefinition<PluginTypes>): void {
+  const type = plugin.type;
   let typeRegistry = pluginRegistry.get(type);
   if (!typeRegistry) {
-    typeRegistry = new Map<string, PluginDefinition<any>>();
+    typeRegistry = new Map<string, PluginDefinition<PluginTypes>>();
     pluginRegistry.set(type, typeRegistry);
   }
-  return typeRegistry;
+  typeRegistry.set(plugin.id, plugin);
 }
 
 /** Funzione che si occupa di Definire i WebComponent con rispettivo tag */
 export function registerReactPluginWebComponent<
-  PT extends PluginTypes,
->(options: { plugin: PluginDefinition<PT> }) {
-  const type = options.plugin.type;
+  PT extends PluginTypes = PluginTypes,
+>({ plugin }: { plugin: PluginDefinition<PT> }) {
+  const type = plugin.type;
   const tag: PluginTags = PLUGIN_TAGS[type];
 
   // Aggiornamento del registry
-  ensureTypeRegistry(type).set(options.plugin.id, options.plugin);
+  setPluginInTypeRegistry(plugin as unknown as PluginDefinition<PluginTypes>);
 
   // Definizione del WebComponent
   class PluginElement extends HTMLElement {
@@ -70,9 +85,8 @@ export function registerReactPluginWebComponent<
         throw new Error(`Missing ${PLUGIN_ID_ATTR} attribute!`);
       }
 
-      const plugin = getPlugin(type, pluginId) as
-        | PluginDefinition<PT>
-        | undefined;
+      const plugin = getPlugin(type, pluginId);
+
       if (!plugin) {
         throw new Error(
           `Plugin not registered for type "${type}" and id "${pluginId}"`,
