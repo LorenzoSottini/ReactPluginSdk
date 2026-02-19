@@ -43,7 +43,7 @@ const PluginExample = (props: { manifestUrl: string }) => {
       disposed = true;
       if (hostElementRef.current) clearPluginMount(hostElementRef.current);
     };
-  }, []);
+  }, [props.manifestUrl]);
 
   return (
     <div>
