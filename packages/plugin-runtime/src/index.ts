@@ -9,51 +9,12 @@ import type {
 } from "@acme/plugin-contracts";
 import { PLUGIN_TAGS } from "@acme/plugin-contracts";
 import { PluginProvider } from "@acme/plugin-react";
+import {
+  getPluginFromRegistry,
+  setPluginInTypeRegistry,
+} from "./PluginRegistry";
 
 const PLUGIN_ID_ATTR = "plugin-id";
-const GLOBAL_PLUGIN_REGISTRY_KEY = "__acme_plugin_registry__";
-
-type PluginRegistry = Map<
-  PluginTypes,
-  Map<string, PluginDefinition<PluginTypes>>
->;
-
-/**
- * Registro dei plugin Definiti
- * Permette di evitare che la define definisca più volte lo stesso custom tag
- * Definito su globalThis per evitare evitare che la presenza di piu bundle di plugin creino registry differenti
- */
-function getGlobalPluginRegistry(): PluginRegistry {
-  const runtimeGlobal = globalThis as typeof globalThis & {
-    [GLOBAL_PLUGIN_REGISTRY_KEY]?: PluginRegistry;
-  };
-
-  runtimeGlobal[GLOBAL_PLUGIN_REGISTRY_KEY] ??= new Map();
-
-  return runtimeGlobal[GLOBAL_PLUGIN_REGISTRY_KEY];
-}
-
-/** Registro condiviso tra bundle multipli sullo stesso host runtime. */
-const pluginRegistry = getGlobalPluginRegistry();
-
-/** Fornisce il plugin dal registry */
-function getPlugin(
-  type: PluginTypes,
-  id: string,
-): PluginDefinition<PluginTypes> | undefined {
-  return pluginRegistry.get(type)?.get(id);
-}
-
-/** Registra la Definizione del plugin sul registry, assicurandosi che il Map per Type si presente o meno */
-function setPluginInTypeRegistry(plugin: PluginDefinition<PluginTypes>): void {
-  const type = plugin.type;
-  let typeRegistry = pluginRegistry.get(type);
-  if (!typeRegistry) {
-    typeRegistry = new Map<string, PluginDefinition<PluginTypes>>();
-    pluginRegistry.set(type, typeRegistry);
-  }
-  typeRegistry.set(plugin.id, plugin);
-}
 
 /** Funzione che si occupa di Definire i WebComponent con rispettivo tag */
 export function registerReactPluginWebComponent<
@@ -66,7 +27,9 @@ export function registerReactPluginWebComponent<
   setPluginInTypeRegistry(plugin as unknown as PluginDefinition<PluginTypes>);
 
   // Definizione del WebComponent
-  class PluginElement extends HTMLElement {
+  class PluginElement extends HTMLElement implements PluginElementWithCtx {
+    ctx!: PluginContext;
+
     private root?: ReactDOM.Root;
     private cleanup?: () => void;
     private container?: HTMLDivElement;
@@ -85,7 +48,7 @@ export function registerReactPluginWebComponent<
         throw new Error(`Missing ${PLUGIN_ID_ATTR} attribute!`);
       }
 
-      const plugin = getPlugin(type, pluginId);
+      const plugin = getPluginFromRegistry(type, pluginId);
 
       if (!plugin) {
         throw new Error(
