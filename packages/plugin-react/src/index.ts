@@ -2,28 +2,26 @@ import type { ComponentType } from "react";
 import type {
   ContractVersion,
   PluginContext,
+  PluginMeta,
   PluginTypes,
 } from "@acme/plugin-contracts";
 import { PLUGIN_TYPES } from "@acme/plugin-contracts";
 
 /** Plugin Definition */
-export type PluginDefinition<PT extends PluginTypes = PluginTypes> = {
-  /** Tipo del plugin  */
-  type: PT;
-  /** Id univoco del plugin */
-  id: string;
-  /** Versione del contratto utilizzato */
-  contractVersion: ContractVersion;
-  /** Componente da renderizzare nel plugin */
-  Root: ComponentType;
-  /**
-   * Hook opzionale di lifecycle:
-   * - viene chiamato quando l'istanza del plugin viene montata nel WebComponent
-   * - riceve il ctx host
-   * - puo ritornare una funzione di cleanup, eseguita allo smontaggio
-   */
-  activate?: (ctx: PluginContext<PT>) => void | (() => void);
-};
+export type PluginDefinition<PT extends PluginTypes = PluginTypes> =
+  PluginMeta & {
+    /** Tipo del plugin  */
+    type: PT;
+    /** Componente da renderizzare nel plugin */
+    Root: ComponentType;
+    /**
+     * Hook opzionale di lifecycle:
+     * - viene chiamato quando l'istanza del plugin viene montata nel WebComponent
+     * - riceve il ctx host
+     * - puo ritornare una funzione di cleanup, eseguita allo smontaggio
+     */
+    activate?: (ctx: PluginContext<PT>) => void | (() => void);
+  };
 
 /** Helper di definizione e Validazione strutturale del plugin */
 export function definePlugin<PT extends PluginTypes>(
@@ -46,15 +44,6 @@ export function definePlugin<PT extends PluginTypes>(
       `[definePlugin] Invalid plugin definition: 'type' must be one of ${Object.keys(
         PLUGIN_TYPES,
       ).join(", ")}`,
-    );
-  }
-
-  if (
-    typeof def.contractVersion !== "string" ||
-    def.contractVersion.trim().length === 0
-  ) {
-    throw new Error(
-      "[definePlugin] Invalid plugin definition: 'contractVersion' is required",
     );
   }
 

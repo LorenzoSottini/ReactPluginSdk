@@ -24,19 +24,35 @@ export function registerReactPluginWebComponent<
   const tag: PluginTags = PLUGIN_TAGS[type];
 
   // Aggiornamento del registry
-  setPluginInTypeRegistry(plugin as unknown as PluginDefinition<PluginTypes>);
+  setPluginInTypeRegistry(
+    plugin as unknown as PluginDefinition<PluginTypes>,
+    (container, ctx) => {
+      const root = ReactDOM.createRoot(container);
+      root.render(PluginProvider(ctx, React.createElement(plugin.Root)));
+
+      let cleanup: (() => void) | undefined;
+      if (plugin.activate) {
+        const result = plugin.activate(ctx as PluginContext<PT>);
+        if (typeof result === "function") cleanup = result;
+      }
+
+      return () => {
+        cleanup?.();
+        root.unmount();
+      };
+    },
+  );
 
   // Definizione del WebComponent
   class PluginElement extends HTMLElement implements PluginElementWithCtx {
     ctx!: PluginContext;
 
-    private root?: ReactDOM.Root;
-    private cleanup?: () => void;
+    private unmount?: () => void;
     private container?: HTMLDivElement;
     private shadow?: ShadowRoot;
 
     connectedCallback() {
-      if (this.root) return;
+      if (this.unmount) return;
 
       const _element = this as Partial<PluginElementWithCtx>;
       const ctx = _element.ctx;
@@ -48,9 +64,9 @@ export function registerReactPluginWebComponent<
         throw new Error(`Missing ${PLUGIN_ID_ATTR} attribute!`);
       }
 
-      const plugin = getPluginFromRegistry(type, pluginId);
+      const registration = getPluginFromRegistry(type, pluginId);
 
-      if (!plugin) {
+      if (!registration) {
         throw new Error(
           `Plugin not registered for type "${type}" and id "${pluginId}"`,
         );
@@ -66,24 +82,18 @@ export function registerReactPluginWebComponent<
       this.container = document.createElement("div");
       this.shadow.replaceChildren(this.container);
 
-      // Creazione della root React e render del Plugin con relativo provider
-      this.root = ReactDOM.createRoot(this.container);
-      this.root.render(PluginProvider(ctx, React.createElement(plugin.Root)));
-
-      // Esegue il setup opzionale del plugin.
-      // Se activate ritorna una funzione, viene salvata per l'unmount.
-      if (plugin.activate) {
-        const result = plugin.activate(ctx as PluginContext<PT>);
-        if (typeof result === "function") this.cleanup = result;
-      }
+      // Il mount e il relativo renderer React vengono dal plugin registrato,
+      // cosi plugin bundled e peer possono coesistere sullo stesso host.
+      const teardown = registration.mount(
+        this.container,
+        ctx as PluginContext<PluginTypes>,
+      );
+      if (typeof teardown === "function") this.unmount = teardown;
     }
 
     disconnectedCallback() {
-      // Teardown del plugin (se fornito da activate).
-      this.cleanup?.();
-      this.cleanup = undefined;
-      this.root?.unmount();
-      this.root = undefined;
+      this.unmount?.();
+      this.unmount = undefined;
       this.container?.remove();
       this.container = undefined;
       this.shadow = undefined;

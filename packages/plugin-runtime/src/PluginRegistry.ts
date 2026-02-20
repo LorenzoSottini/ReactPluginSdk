@@ -1,11 +1,19 @@
-import type { PluginTypes } from "@acme/plugin-contracts";
+import type { PluginContext, PluginTypes } from "@acme/plugin-contracts";
 import type { PluginDefinition } from "@acme/plugin-react";
 
 const GLOBAL_PLUGIN_REGISTRY_KEY = "__acme_plugin_registry__";
 
+export type RegisteredPlugin = {
+  plugin: PluginDefinition<PluginTypes>;
+  mount: (
+    container: HTMLDivElement,
+    ctx: PluginContext<PluginTypes>,
+  ) => (() => void) | void;
+};
+
 export type PluginRegistry = Map<
   PluginTypes,
-  Map<string, PluginDefinition<PluginTypes>>
+  Map<string, RegisteredPlugin>
 >;
 
 /**
@@ -30,19 +38,20 @@ const pluginRegistry = getGlobalPluginRegistry();
 export function getPluginFromRegistry(
   type: PluginTypes,
   id: string,
-): PluginDefinition<PluginTypes> | undefined {
+): RegisteredPlugin | undefined {
   return pluginRegistry.get(type)?.get(id);
 }
 
 /** Registra la Definizione del plugin sul registry, assicurandosi che il Map per Type si presente o meno */
 export function setPluginInTypeRegistry(
   plugin: PluginDefinition<PluginTypes>,
+  mount: RegisteredPlugin["mount"],
 ): void {
   const type = plugin.type;
   let typeRegistry = pluginRegistry.get(type);
   if (!typeRegistry) {
-    typeRegistry = new Map<string, PluginDefinition<PluginTypes>>();
+    typeRegistry = new Map<string, RegisteredPlugin>();
     pluginRegistry.set(type, typeRegistry);
   }
-  typeRegistry.set(plugin.id, plugin);
+  typeRegistry.set(plugin.id, { plugin, mount });
 }

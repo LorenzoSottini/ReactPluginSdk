@@ -15,9 +15,10 @@
     "react-dom": "catalog:"
   },
   "devDependencies": {
+    "@acme/plugin-tools": "workspace:*",
     "@types/react": "^19.2.14",
     "@vitejs/plugin-react": "4.0.0",
     "typescript": "catalog:",
-    "vite": "^5.0.0"
+    "vite": "catalog:"
   }
 }

@@ -1,5 +1,5 @@
 {
-  "name": "@acme/plugin-contracts",
+  "name": "@acme/plugin-tools",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -10,8 +10,7 @@
     ".": {
       "types": "./dist/src/index.d.ts",
       "import": "./dist/index.js"
-    },
-    "./schemas/*.schema.json": "./dist/schemas/*.schema.json"
+    }
   },
   "files": [
     "dist"
@@ -21,8 +20,12 @@
     "build:types": "tsc -p tsconfig.json --emitDeclarationOnly",
     "check:ts": "tsc -p tsconfig.json --noEmit"
   },
+  "dependencies": {
+    "@acme/plugin-contracts": "workspace:*"
+  },
   "devDependencies": {
-    "typescript": "catalog:",
-    "vite": "catalog:"
+    "@types/node": "^24.10.1",
+    "vite": "catalog:",
+    "typescript": "catalog:"
   }
 }

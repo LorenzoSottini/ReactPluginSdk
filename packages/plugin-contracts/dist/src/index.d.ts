@@ -1,57 +1,46 @@
 import type { HostServices, HostUser } from "./Services";
 export * from "./Services";
-import packageJson from "../package.json";
-
 /** Versione del contratto derivata dal package */
-export const CONTRACT_VERSION = packageJson.version;
+export declare const CONTRACT_VERSION: string;
 export type ContractVersion = typeof CONTRACT_VERSION;
-
 /** Tipi di plugin supportati */
-export const PLUGIN_TYPES = {
-  ROUTE: "ROUTE",
-  WIDGET: "WIDGET",
-  COMMAND: "COMMAND",
-} as const;
+export declare const PLUGIN_TYPES: {
+    readonly ROUTE: "ROUTE";
+    readonly WIDGET: "WIDGET";
+    readonly COMMAND: "COMMAND";
+};
 export type PluginTypes = keyof typeof PLUGIN_TYPES;
-
 /** Mapping dei WebComponent Tag by PluginType */
-export const PLUGIN_TAGS = {
-  ROUTE: "plugin-route",
-  COMMAND: "plugin-command",
-  WIDGET: "plugin-widget",
-} as const satisfies Record<PluginTypes, string>;
+export declare const PLUGIN_TAGS: {
+    readonly ROUTE: "plugin-route";
+    readonly COMMAND: "plugin-command";
+    readonly WIDGET: "plugin-widget";
+};
 export type PluginTags = (typeof PLUGIN_TAGS)[PluginTypes];
-
 /**
  * Manifest statico del plugin:
  * metadati e entry ESM usati dall'host per discovery e caricamento.
  * Non rappresenta stato runtime del plugin.
  */
 export type PluginManifest<PT extends PluginTypes = PluginTypes> = {
-  type: PT;
-  id: string;
-  name: string;
-  description: string;
-  version: string;
-  contractVersion: ContractVersion;
-  entry: string;
+    type: PT;
+    id: string;
+    name: string;
+    description: string;
+    version: string;
+    contractVersion: ContractVersion;
+    entry: string;
 };
-
 /**
  * Definizione statica del manifest senza le informazioni generate in fase di build
  */
-export type PluginMeta = Pick<
-  PluginManifest,
-  "id" | "name" | "description" | "type"
->;
-
+export type PluginMeta = Pick<PluginManifest, "id" | "name" | "description" | "type">;
 export type PluginContext<PT extends PluginTypes = PluginTypes> = {
-  contractVersion: ContractVersion;
-  manifest: PluginManifest<PT>;
-  user: HostUser;
-  services: HostServices;
+    contractVersion: ContractVersion;
+    manifest: PluginManifest<PT>;
+    user: HostUser;
+    services: HostServices;
 };
-
 export type PluginElementWithCtx = HTMLElement & {
-  ctx: PluginContext;
+    ctx: PluginContext;
 };

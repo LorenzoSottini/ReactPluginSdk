@@ -2,9 +2,9 @@
 
 export const PLUGINS_AVAILABLE = {
   EXAMPLE_ROUTE: {
-    manifestUrl: "http://localhost:5174/plugin.manifest.json",
+    manifestUrl: "http://localhost:5174/dist/manifest.json",
   },
   EXAMPLE_REACT_PEER: {
-    manifestUrl: "http://localhost:5175/plugin.manifest.json",
+    manifestUrl: "http://localhost:5175/dist/manifest.json",
   },
 };
