@@ -2,7 +2,6 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 
 export default defineConfig({
-  base: "/peer_plugin/",
   plugins: [react({ include: /\/src\/.*\.[tj]sx?$/ })],
   build: {
     minify: false,
@@ -20,6 +19,20 @@ export default defineConfig({
         "react/jsx-runtime",
         "react/jsx-dev-runtime",
       ],
+    },
+  },
+  server: {
+    port: 5175,
+    strictPort: true,
+    cors: {
+      origin: "http://localhost:5173",
+      methods: ["GET", "OPTIONS"],
+      allowedHeaders: ["Content-Type"],
+    },
+    headers: {
+      "Access-Control-Allow-Origin": "http://localhost:5173",
+      "Access-Control-Allow-Methods": "GET,OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type",
     },
   },
 });

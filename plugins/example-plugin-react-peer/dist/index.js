@@ -4,6 +4,21 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
 import { jsx, jsxs } from "react/jsx-runtime";
 import React, { createContext, useContext, useState } from "react";
 import ReactDOM from "react-dom/client";
+const version = "0.1.0";
+const packageJson = {
+  version
+};
+const CONTRACT_VERSION = packageJson.version;
+const PLUGIN_TYPES = {
+  ROUTE: "ROUTE",
+  WIDGET: "WIDGET",
+  COMMAND: "COMMAND"
+};
+const PLUGIN_TAGS = {
+  ROUTE: "plugin-route",
+  COMMAND: "plugin-command",
+  WIDGET: "plugin-widget"
+};
 const PluginReactContext = createContext(null);
 function PluginProvider(ctx, children) {
   return /* @__PURE__ */ jsx(PluginReactContext.Provider, { value: ctx, children });
@@ -25,22 +40,40 @@ function useManifest() {
   return usePluginContext().manifest;
 }
 function definePlugin(def) {
+  if (!def || typeof def !== "object") {
+    throw new Error(
+      "[definePlugin] Invalid plugin definition: expected object"
+    );
+  }
+  if (typeof def.id !== "string" || def.id.trim().length === 0) {
+    throw new Error(
+      "[definePlugin] Invalid plugin definition: 'id' is required"
+    );
+  }
+  if (typeof def.type !== "string" || !(def.type in PLUGIN_TYPES)) {
+    throw new Error(
+      `[definePlugin] Invalid plugin definition: 'type' must be one of ${Object.keys(
+        PLUGIN_TYPES
+      ).join(", ")}`
+    );
+  }
+  if (typeof def.contractVersion !== "string" || def.contractVersion.trim().length === 0) {
+    throw new Error(
+      "[definePlugin] Invalid plugin definition: 'contractVersion' is required"
+    );
+  }
+  if (typeof def.Root !== "function") {
+    throw new Error(
+      "[definePlugin] Invalid plugin definition: 'Root' must be a component"
+    );
+  }
+  if (def.activate !== void 0 && typeof def.activate !== "function") {
+    throw new Error(
+      "[definePlugin] Invalid plugin definition: 'activate' must be a function"
+    );
+  }
   return def;
 }
-const version = "0.1.0";
-const packageJson = {
-  version
-};
-const CONTRACT_VERSION = packageJson.version;
-const PLUGIN_TYPES = {
-  ROUTE: "ROUTE"
-};
-const PLUGIN_TAGS = {
-  ROUTE: "plugin-route",
-  COMMAND: "plugin-command",
-  WIDGET: "plugin-widget"
-};
-const PLUGIN_ID_ATTR = "plugin-id";
 const GLOBAL_PLUGIN_REGISTRY_KEY = "__acme_plugin_registry__";
 function getGlobalPluginRegistry() {
   const runtimeGlobal = globalThis;
@@ -48,7 +81,7 @@ function getGlobalPluginRegistry() {
   return runtimeGlobal[GLOBAL_PLUGIN_REGISTRY_KEY];
 }
 const pluginRegistry = getGlobalPluginRegistry();
-function getPlugin(type, id2) {
+function getPluginFromRegistry(type, id2) {
   var _a;
   return (_a = pluginRegistry.get(type)) == null ? void 0 : _a.get(id2);
 }
@@ -61,6 +94,7 @@ function setPluginInTypeRegistry(plugin2) {
   }
   typeRegistry.set(plugin2.id, plugin2);
 }
+const PLUGIN_ID_ATTR = "plugin-id";
 function registerReactPluginWebComponent({ plugin: plugin2 }) {
   const type = plugin2.type;
   const tag = PLUGIN_TAGS[type];
@@ -68,6 +102,7 @@ function registerReactPluginWebComponent({ plugin: plugin2 }) {
   class PluginElement extends HTMLElement {
     constructor() {
       super(...arguments);
+      __publicField(this, "ctx");
       __publicField(this, "root");
       __publicField(this, "cleanup");
       __publicField(this, "container");
@@ -84,7 +119,7 @@ function registerReactPluginWebComponent({ plugin: plugin2 }) {
       if (!pluginId) {
         throw new Error(`Missing ${PLUGIN_ID_ATTR} attribute!`);
       }
-      const plugin22 = getPlugin(type, pluginId);
+      const plugin22 = getPluginFromRegistry(type, pluginId);
       if (!plugin22) {
         throw new Error(
           `Plugin not registered for type "${type}" and id "${pluginId}"`

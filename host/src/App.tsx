@@ -2,9 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import "./App.css";
 import { HostServiceInstance } from "./Service";
 import { clearPluginMount, loadPluginFromManifest } from "./PluginLoader";
-
-const PLUGIN_MANIFEST_URL = "/plugin/plugin.manifest.json";
-const PLUGIN_PEER_MANIFEST_URL = "/peer_plugin/plugin.manifest.json";
+import { PLUGINS_AVAILABLE } from "./pluginsList";
 
 const user = { id: "host-user-1", displayName: "Lorenzo" };
 
@@ -60,8 +58,12 @@ function App() {
       <h1>Plugin Host</h1>
       <p className="read-the-docs">Integrazione plugin via dynamic import</p>
       <div style={{ display: "flex", flexDirection: "row", gap: "16px" }}>
-        <PluginExample manifestUrl={PLUGIN_MANIFEST_URL} />
-        <PluginExample manifestUrl={PLUGIN_PEER_MANIFEST_URL} />
+        <PluginExample
+          manifestUrl={PLUGINS_AVAILABLE.EXAMPLE_ROUTE.manifestUrl}
+        />
+        <PluginExample
+          manifestUrl={PLUGINS_AVAILABLE.EXAMPLE_REACT_PEER.manifestUrl}
+        />
       </div>
     </>
   );
