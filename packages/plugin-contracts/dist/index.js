@@ -13,8 +13,12 @@ const PLUGIN_TAGS_PREFIX = {
   COMMAND: "plugin-command",
   WIDGET: "plugin-widget"
 };
+function composeTagName(id, type) {
+  return `${PLUGIN_TAGS_PREFIX[type]}-${id}`;
+}
 export {
   CONTRACT_VERSION,
   PLUGIN_TAGS_PREFIX,
-  PLUGIN_TYPES
+  PLUGIN_TYPES,
+  composeTagName
 };

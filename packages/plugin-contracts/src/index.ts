@@ -22,6 +22,13 @@ export const PLUGIN_TAGS_PREFIX = {
 } as const satisfies Record<PluginTypes, string>;
 export type PluginTags = (typeof PLUGIN_TAGS_PREFIX)[PluginTypes];
 
+export function composeTagName<TP extends PluginTypes>(
+  id: PluginMeta["id"],
+  type: TP,
+): PluginManifest<TP>["tagName"] {
+  return `${PLUGIN_TAGS_PREFIX[type]}-${id}`;
+}
+
 /**
  * Manifest statico del plugin:
  * metadati e entry ESM usati dall'host per discovery e caricamento.

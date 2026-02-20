@@ -1,0 +1,21 @@
+{
+  "name": "example-plugin-angularjs-v1",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite --port 5176",
+    "check:ts": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@acme/plugin-runtime": "workspace:*",
+    "@acme/plugin-contracts": "workspace:*",
+    "angular": "^1.8.3"
+  },
+  "devDependencies": {
+    "@acme/plugin-tools": "workspace:*",
+    "@types/angular": "^1.8.9",
+    "typescript": "catalog:",
+    "vite": "catalog:"
+  }
+}

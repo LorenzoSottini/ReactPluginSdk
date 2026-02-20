@@ -17,6 +17,7 @@ export declare const PLUGIN_TAGS_PREFIX: {
     readonly WIDGET: "plugin-widget";
 };
 export type PluginTags = (typeof PLUGIN_TAGS_PREFIX)[PluginTypes];
+export declare function composeTagName<TP extends PluginTypes>(id: PluginMeta["id"], type: TP): PluginManifest<TP>["tagName"];
 /**
  * Manifest statico del plugin:
  * metadati e entry ESM usati dall'host per discovery e caricamento.
@@ -48,3 +49,4 @@ export type PluginContext<PT extends PluginTypes = PluginTypes> = {
 export type PluginElementWithCtx = HTMLElement & {
     ctx: PluginContext;
 };
+//# sourceMappingURL=index.d.ts.map

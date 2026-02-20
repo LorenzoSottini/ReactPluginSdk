@@ -64,6 +64,9 @@ function App() {
         <PluginExample
           manifestUrl={PLUGINS_AVAILABLE.EXAMPLE_REACT_PEER.manifestUrl}
         />
+        <PluginExample
+          manifestUrl={PLUGINS_AVAILABLE.EXAMPLE_ANGULAR.manifestUrl}
+        />
       </div>
     </>
   );

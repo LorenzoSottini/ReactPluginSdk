@@ -1,10 +1,9 @@
-import type { PluginContext, PluginTypes } from "@acme/plugin-contracts";
-import type { PluginDefinition } from "@acme/plugin-react";
+import type { PluginContext, PluginMeta, PluginTypes } from "@acme/plugin-contracts";
 
 const GLOBAL_PLUGIN_REGISTRY_KEY = "__acme_plugin_registry__";
 
 export type RegisteredPlugin = {
-  plugin: PluginDefinition<PluginTypes>;
+  plugin: PluginMeta;
   mount: (
     container: HTMLDivElement,
     ctx: PluginContext<PluginTypes>,
@@ -44,7 +43,7 @@ export function getPluginFromRegistry(
 
 /** Registra la Definizione del plugin sul registry, assicurandosi che il Map per Type si presente o meno */
 export function setPluginInTypeRegistry(
-  plugin: PluginDefinition<PluginTypes>,
+  plugin: PluginMeta,
   mount: RegisteredPlugin["mount"],
 ): void {
   const type = plugin.type;

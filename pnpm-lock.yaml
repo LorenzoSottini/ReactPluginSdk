@@ -175,6 +175,31 @@ importers:
         specifier: 'catalog:'
         version: 7.3.1(@types/node@24.10.13)
 
+  plugins/example-plugin-angularjs-v1:
+    dependencies:
+      '@acme/plugin-contracts':
+        specifier: workspace:*
+        version: link:../../packages/plugin-contracts
+      '@acme/plugin-runtime':
+        specifier: workspace:*
+        version: link:../../packages/plugin-runtime
+      angular:
+        specifier: ^1.8.3
+        version: 1.8.3
+    devDependencies:
+      '@acme/plugin-tools':
+        specifier: workspace:*
+        version: link:../../packages/plugin-tools
+      '@types/angular':
+        specifier: ^1.8.9
+        version: 1.8.9
+      typescript:
+        specifier: 'catalog:'
+        version: 5.9.3
+      vite:
+        specifier: 'catalog:'
+        version: 7.3.1(@types/node@24.10.13)
+
   plugins/example-plugin-react-peer:
     dependencies:
       '@acme/plugin-contracts':
@@ -648,6 +673,9 @@ packages:
     cpu: [x64]
     os: [win32]
 
+  '@types/angular@1.8.9':
+    resolution: {integrity: sha512-Z0HukqZkx0fotsV3QO00yqU9NzcQI+tMcrum+8MvfB4ePqCawZctF/gz6QiuII+T1ax+LitNoPx/eICTgnF4sg==}
+
   '@types/babel__core@7.20.5':
     resolution: {integrity: sha512-qoQprZvz5wQFJwMDqeseRXWv3rqMvhgpbXFfVyWhbx9X47POIA6i/+dXefEmZKoAgOaTdaIgNSMqMIU61yRyzA==}
 
@@ -760,6 +788,10 @@ packages:
 
   ajv@6.12.6:
     resolution: {integrity: sha512-j3fVLgvTo527anyYyJOGTYJbG+vnnQYvE0m5mmkc1TK+nxAppkCLMIL0aZ4dblVCNoGShhm+kzE4ZUykBoMg4g==}
+
+  angular@1.8.3:
+    resolution: {integrity: sha512-5qjkWIQQVsHj4Sb5TcEs4WZWpFeVFHXwxEBHUhrny41D8UrBAd6T/6nPPAsLngJCReIOqi95W3mxdveveutpZw==}
+    deprecated: For the actively supported Angular, see https://www.npmjs.com/package/@angular/core. AngularJS support has officially ended. For extended AngularJS support options, see https://goo.gle/angularjs-path-forward.
 
   ansi-styles@4.3.0:
     resolution: {integrity: sha512-zbB9rCJAT1rbjiVDb2hqKFHNYLxgtk8NURxZ3IZwD3F6NtxbXZQCnnSi1Lkx+IDohdPlFp222wVALIheZJQSEg==}
@@ -1606,6 +1638,8 @@ snapshots:
   '@rollup/rollup-win32-x64-msvc@4.57.1':
     optional: true
 
+  '@types/angular@1.8.9': {}
+
   '@types/babel__core@7.20.5':
     dependencies:
       '@babel/parser': 7.29.0
@@ -1769,6 +1803,8 @@ snapshots:
       fast-json-stable-stringify: 2.1.0
       json-schema-traverse: 0.4.1
       uri-js: 4.4.1
+
+  angular@1.8.3: {}
 
   ansi-styles@4.3.0:
     dependencies:

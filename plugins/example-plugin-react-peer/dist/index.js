@@ -11,6 +11,9 @@ const PLUGIN_TAGS_PREFIX = {
   COMMAND: "plugin-command",
   WIDGET: "plugin-widget"
 };
+function composeTagName(id, type) {
+  return `${PLUGIN_TAGS_PREFIX[type]}-${id}`;
+}
 const PluginReactContext = createContext(null);
 function PluginProvider(ctx, children) {
   return /* @__PURE__ */ jsx(PluginReactContext.Provider, { value: ctx, children });
@@ -81,27 +84,15 @@ function setPluginInTypeRegistry(plugin2, mount) {
   typeRegistry.set(plugin2.id, { plugin: plugin2, mount });
 }
 const PLUGIN_ID_ATTR = "plugin-id";
-function composeTagName(id, type) {
-  return `${PLUGIN_TAGS_PREFIX[type]}-${id}`;
-}
-function registerReactPluginWebComponent({ plugin: plugin2 }) {
+function registerPluginWebComponent({
+  plugin: plugin2,
+  mount
+}) {
   const type = plugin2.type;
   const tag = composeTagName(plugin2.id, plugin2.type);
   setPluginInTypeRegistry(
     plugin2,
-    (container, ctx) => {
-      const root = ReactDOM.createRoot(container);
-      root.render(PluginProvider(ctx, React.createElement(plugin2.Root)));
-      let cleanup;
-      if (plugin2.activate) {
-        const result = plugin2.activate(ctx);
-        if (typeof result === "function") cleanup = result;
-      }
-      return () => {
-        cleanup?.();
-        root.unmount();
-      };
-    }
+    (container, ctx) => mount(container, ctx)
   );
   class PluginElement extends HTMLElement {
     ctx;
@@ -110,8 +101,8 @@ function registerReactPluginWebComponent({ plugin: plugin2 }) {
     shadow;
     connectedCallback() {
       if (this.unmount) return;
-      const _element = this;
-      const ctx = _element.ctx;
+      const element = this;
+      const ctx = element.ctx;
       if (!ctx) {
         throw new Error("Context not provided!");
       }
@@ -150,6 +141,24 @@ function registerReactPluginWebComponent({ plugin: plugin2 }) {
   if (!customElements.get(tag)) {
     customElements.define(tag, PluginElement);
   }
+}
+function registerReactPluginWebComponent({ plugin: plugin2 }) {
+  registerPluginWebComponent({
+    plugin: plugin2,
+    mount: (container, ctx) => {
+      const root = ReactDOM.createRoot(container);
+      root.render(PluginProvider(ctx, React.createElement(plugin2.Root)));
+      let cleanup;
+      if (plugin2.activate) {
+        const result = plugin2.activate(ctx);
+        if (typeof result === "function") cleanup = result;
+      }
+      return () => {
+        cleanup?.();
+        root.unmount();
+      };
+    }
+  });
 }
 function PluginRoot() {
   const services = useServices();
