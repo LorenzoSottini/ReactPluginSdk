@@ -4,10 +4,11 @@ import type { PluginDefinition } from "@acme/plugin-react";
 import type {
   PluginContext,
   PluginTypes,
-  PluginTags,
   PluginElementWithCtx,
+  PluginMeta,
+  PluginManifest,
 } from "@acme/plugin-contracts";
-import { PLUGIN_TAGS } from "@acme/plugin-contracts";
+import { PLUGIN_TAGS_PREFIX } from "@acme/plugin-contracts";
 import { PluginProvider } from "@acme/plugin-react";
 import {
   getPluginFromRegistry,
@@ -16,12 +17,20 @@ import {
 
 const PLUGIN_ID_ATTR = "plugin-id";
 
+export function composeTagName<TP extends PluginTypes>(
+  id: PluginMeta["id"],
+  type: TP,
+): PluginManifest<TP>["tagName"] {
+  return `${PLUGIN_TAGS_PREFIX[type]}-${id}`;
+}
+
 /** Funzione che si occupa di Definire i WebComponent con rispettivo tag */
 export function registerReactPluginWebComponent<
   PT extends PluginTypes = PluginTypes,
 >({ plugin }: { plugin: PluginDefinition<PT> }) {
   const type = plugin.type;
-  const tag: PluginTags = PLUGIN_TAGS[type];
+
+  const tag = composeTagName(plugin.id, plugin.type);
 
   // Aggiornamento del registry
   setPluginInTypeRegistry(

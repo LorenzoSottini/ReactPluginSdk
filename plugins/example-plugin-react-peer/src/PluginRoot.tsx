@@ -1,6 +1,5 @@
 import { useServices, useUser, useManifest } from "@acme/plugin-react";
 import { useState } from "react";
-import * as META from "../plugin.meta.mjs";
 
 export function PluginRoot() {
   const services = useServices();

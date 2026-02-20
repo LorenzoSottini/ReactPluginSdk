@@ -11,22 +11,20 @@ export declare const PLUGIN_TYPES: {
 };
 export type PluginTypes = keyof typeof PLUGIN_TYPES;
 /** Mapping dei WebComponent Tag by PluginType */
-export declare const PLUGIN_TAGS: {
+export declare const PLUGIN_TAGS_PREFIX: {
     readonly ROUTE: "plugin-route";
     readonly COMMAND: "plugin-command";
     readonly WIDGET: "plugin-widget";
 };
-export type PluginTags = (typeof PLUGIN_TAGS)[PluginTypes];
+export type PluginTags = (typeof PLUGIN_TAGS_PREFIX)[PluginTypes];
 /**
  * Manifest statico del plugin:
  * metadati e entry ESM usati dall'host per discovery e caricamento.
  * Non rappresenta stato runtime del plugin.
  */
-export type PluginManifest<PT extends PluginTypes = PluginTypes> = {
+export type PluginManifest<PT extends PluginTypes = PluginTypes> = PluginMeta & {
     type: PT;
-    id: string;
-    name: string;
-    description: string;
+    tagName: `${(typeof PLUGIN_TAGS_PREFIX)[PT]}-${PluginMeta["id"]}`;
     version: string;
     contractVersion: ContractVersion;
     entry: string;
@@ -34,7 +32,13 @@ export type PluginManifest<PT extends PluginTypes = PluginTypes> = {
 /**
  * Definizione statica del manifest senza le informazioni generate in fase di build
  */
-export type PluginMeta = Pick<PluginManifest, "id" | "name" | "description" | "type">;
+export type PluginMeta = {
+    type: PluginTypes;
+    /** Alfanumerico generetato dalla CLI */
+    id: string;
+    name: string;
+    description: string;
+};
 export type PluginContext<PT extends PluginTypes = PluginTypes> = {
     contractVersion: ContractVersion;
     manifest: PluginManifest<PT>;

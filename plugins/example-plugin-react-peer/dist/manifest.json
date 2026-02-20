@@ -1,8 +1,9 @@
 {
-  "id": "acme.react-peer",
+  "id": "react-peer",
   "name": "Plugin React in PeerPlugin React",
   "description": "Plugin ROUTE con React che viene fornito dall'host",
   "type": "WIDGET",
+  "tagName": "plugin-widget-react-peer",
   "contractVersion": "0.1.0",
   "version": "1.0.0",
   "entry": "index.js"

@@ -2,39 +2,15 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import { META } from "./src/meta";
 import PACKAGE from "./package.json";
-import { CONTRACT_VERSION, PluginManifest } from "@acme/plugin-contracts";
-
-import path from "node:path";
-import fs from "node:fs/promises";
+import { postBuildPluginManifest } from "@acme/plugin-tools";
 
 const entrySource = "src/index.ts";
-
-function postBuildPluginManifest() {
-  return {
-    name: "acme:post-build-plugin-manifest",
-    async closeBundle() {
-      const distDir = "./dist";
-      const entryKey = `index.js`;
-
-      const pluginManifest = {
-        ...META,
-        contractVersion: CONTRACT_VERSION,
-        version: PACKAGE.version,
-        entry: entryKey,
-      } satisfies PluginManifest;
-
-      await fs.writeFile(
-        path.join(distDir, "manifest.json"),
-        JSON.stringify(pluginManifest, null, 2),
-      );
-    },
-  };
-}
 
 export default defineConfig(({ command }) => ({
   plugins: [
     ...(command === "build" ? [react()] : []),
-    postBuildPluginManifest(),
+
+    postBuildPluginManifest({ meta: META, version: PACKAGE.version }),
   ],
   build: {
     minify: false,

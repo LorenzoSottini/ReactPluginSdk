@@ -1,11 +1,12 @@
 import { jsx, jsxs } from "react/jsx-runtime";
 import React, { createContext, useContext, useState } from "react";
 import ReactDOM from "react-dom/client";
-const s = {
+const PLUGIN_TYPES = {
   ROUTE: "ROUTE",
   WIDGET: "WIDGET",
   COMMAND: "COMMAND"
-}, t = {
+};
+const PLUGIN_TAGS_PREFIX = {
   ROUTE: "plugin-route",
   COMMAND: "plugin-command",
   WIDGET: "plugin-widget"
@@ -41,10 +42,10 @@ function definePlugin(def) {
       "[definePlugin] Invalid plugin definition: 'id' is required"
     );
   }
-  if (typeof def.type !== "string" || !(def.type in s)) {
+  if (typeof def.type !== "string" || !(def.type in PLUGIN_TYPES)) {
     throw new Error(
       `[definePlugin] Invalid plugin definition: 'type' must be one of ${Object.keys(
-        s
+        PLUGIN_TYPES
       ).join(", ")}`
     );
   }
@@ -80,9 +81,12 @@ function setPluginInTypeRegistry(plugin2, mount) {
   typeRegistry.set(plugin2.id, { plugin: plugin2, mount });
 }
 const PLUGIN_ID_ATTR = "plugin-id";
+function composeTagName(id, type) {
+  return `${PLUGIN_TAGS_PREFIX[type]}-${id}`;
+}
 function registerReactPluginWebComponent({ plugin: plugin2 }) {
   const type = plugin2.type;
-  const tag = t[type];
+  const tag = composeTagName(plugin2.id, plugin2.type);
   setPluginInTypeRegistry(
     plugin2,
     (container, ctx) => {
@@ -207,7 +211,8 @@ function PluginRoot() {
   ] });
 }
 const META = {
-  id: "acme.react-peer",
+  id: "react-peer",
+  // Sarà generato dalla CLI
   name: "Plugin React in PeerPlugin React",
   description: "Plugin ROUTE con React che viene fornito dall'host",
   type: "WIDGET"

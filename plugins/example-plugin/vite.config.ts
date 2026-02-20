@@ -1,15 +1,8 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
-import { PluginMeta } from "@acme/plugin-contracts";
 import { postBuildPluginManifest } from "@acme/plugin-tools";
 import PACKAGE from "./package.json";
-
-export const META = {
-  id: "acme.example-plugin",
-  name: "Plugin React",
-  description: "Plugin ROUTE con React in boundle - 945kb",
-  type: "ROUTE",
-} as const satisfies PluginMeta;
+import { META } from "./src/meta";
 
 const entrySource = "src/index.ts";
 
@@ -19,6 +12,7 @@ export default defineConfig({
     postBuildPluginManifest({ meta: META, version: PACKAGE.version }),
   ],
   build: {
+    minify: false,
     lib: {
       entry: entrySource,
       formats: ["es"],

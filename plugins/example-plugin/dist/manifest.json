@@ -1,8 +1,9 @@
 {
-  "id": "acme.example-plugin",
+  "id": "example-plugin",
   "name": "Plugin React",
   "description": "Plugin ROUTE con React in boundle - 945kb",
   "type": "ROUTE",
+  "tagName": "plugin-route-example-plugin",
   "contractVersion": "0.1.0",
   "version": "1.0.0",
   "entry": "index.js"

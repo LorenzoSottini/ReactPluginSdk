@@ -1,5 +1,6 @@
 import {
   CONTRACT_VERSION,
+  PLUGIN_TAGS_PREFIX,
   type PluginManifest,
   type PluginMeta,
 } from "@acme/plugin-contracts";
@@ -29,6 +30,7 @@ export function postBuildPluginManifest({
     async closeBundle() {
       const pluginManifest = {
         ...meta,
+        tagName: `${PLUGIN_TAGS_PREFIX[meta.type]}-${meta.id}`,
         contractVersion: CONTRACT_VERSION,
         version,
         entry,

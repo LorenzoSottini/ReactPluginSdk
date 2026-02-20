@@ -1,0 +1,365 @@
+{
+  "version": "6.0",
+  "nxVersion": "20.4.6",
+  "pathMappings": {},
+  "nxJsonPlugins": [],
+  "fileMap": {
+    "projectFileMap": {
+      "@acme/plugin-runtime": [
+        {
+          "file": "packages/plugin-runtime/package.json",
+          "hash": "12330491909302572595",
+          "deps": [
+            "npm:react",
+            "npm:react-dom",
+            "npm:@types/node",
+            "npm:@types/react",
+            "npm:@types/react-dom",
+            "npm:typescript",
+            "@acme/plugin-contracts",
+            "@acme/plugin-react"
+          ]
+        },
+        {
+          "file": "packages/plugin-runtime/src/PluginRegistry.ts",
+          "hash": "16789470555712555247"
+        },
+        {
+          "file": "packages/plugin-runtime/src/index.ts",
+          "hash": "13917366080012185699"
+        },
+        {
+          "file": "packages/plugin-runtime/tsconfig.json",
+          "hash": "11556357538276044971"
+        }
+      ],
+      "@acme/plugin-contracts": [
+        {
+          "file": "packages/plugin-contracts/dist/index.js",
+          "hash": "13626163879769825023"
+        },
+        {
+          "file": "packages/plugin-contracts/dist/schemas/plugin_manifest.schema.json",
+          "hash": "9763798478401422546"
+        },
+        {
+          "file": "packages/plugin-contracts/dist/src/Services.d.ts",
+          "hash": "5274981689974344253"
+        },
+        {
+          "file": "packages/plugin-contracts/dist/src/index.d.ts",
+          "hash": "10353822515283660490"
+        },
+        {
+          "file": "packages/plugin-contracts/package.json",
+          "hash": "5499920232548747758",
+          "deps": [
+            "npm:typescript",
+            "npm:vite"
+          ]
+        },
+        {
+          "file": "packages/plugin-contracts/schemas/plugin_manifest.schema.json",
+          "hash": "9763798478401422546"
+        },
+        {
+          "file": "packages/plugin-contracts/src/Services.ts",
+          "hash": "717461830038436483"
+        },
+        {
+          "file": "packages/plugin-contracts/src/index.ts",
+          "hash": "11880761689287116638"
+        },
+        {
+          "file": "packages/plugin-contracts/tsconfig.json",
+          "hash": "18061194484041161718"
+        },
+        {
+          "file": "packages/plugin-contracts/vite.config.ts",
+          "hash": "17457099477723168343"
+        }
+      ],
+      "example-plugin": [
+        {
+          "file": "plugins/example-plugin/dist/index.js",
+          "hash": "14300800265047875310"
+        },
+        {
+          "file": "plugins/example-plugin/dist/manifest.json",
+          "hash": "6079531229475284580"
+        },
+        {
+          "file": "plugins/example-plugin/package.json",
+          "hash": "2039028534556363135",
+          "deps": [
+            "@acme/plugin-tools",
+            "npm:@types/react",
+            "npm:@vitejs/plugin-react@4.0.0",
+            "npm:typescript",
+            "npm:vite",
+            "@acme/plugin-react",
+            "@acme/plugin-runtime",
+            "@acme/plugin-contracts",
+            "npm:react",
+            "npm:react-dom"
+          ]
+        },
+        {
+          "file": "plugins/example-plugin/src/PluginRoot.tsx",
+          "hash": "12854870529643141594"
+        },
+        {
+          "file": "plugins/example-plugin/src/index.ts",
+          "hash": "18106132512130795396"
+        },
+        {
+          "file": "plugins/example-plugin/src/meta.ts",
+          "hash": "3354423254938974960"
+        },
+        {
+          "file": "plugins/example-plugin/tsconfig.json",
+          "hash": "4445737218291622516"
+        },
+        {
+          "file": "plugins/example-plugin/vite.config.ts",
+          "hash": "11688461772600747091"
+        }
+      ],
+      "host": [
+        {
+          "file": "host/.gitignore",
+          "hash": "13046175384202504187"
+        },
+        {
+          "file": "host/README.md",
+          "hash": "6529887400882112953"
+        },
+        {
+          "file": "host/eslint.config.js",
+          "hash": "16942999842498204"
+        },
+        {
+          "file": "host/index.html",
+          "hash": "8755113944578958324"
+        },
+        {
+          "file": "host/package.json",
+          "hash": "11631815502835529584",
+          "deps": [
+            "npm:@eslint/js",
+            "npm:@types/node",
+            "npm:@types/react",
+            "npm:@types/react-dom",
+            "npm:@vitejs/plugin-react@5.1.1",
+            "npm:eslint",
+            "npm:eslint-plugin-react-hooks",
+            "npm:eslint-plugin-react-refresh",
+            "npm:globals@16.5.0",
+            "npm:typescript",
+            "npm:typescript-eslint",
+            "npm:vite",
+            "npm:react",
+            "npm:react-dom",
+            "@acme/plugin-contracts"
+          ]
+        },
+        {
+          "file": "host/public/vite.svg",
+          "hash": "16046085400642193116"
+        },
+        {
+          "file": "host/src/App.css",
+          "hash": "3739391659270974612"
+        },
+        {
+          "file": "host/src/App.tsx",
+          "hash": "16398802383161987434"
+        },
+        {
+          "file": "host/src/PluginLoader.ts",
+          "hash": "1796737975778073301"
+        },
+        {
+          "file": "host/src/Service.ts",
+          "hash": "8897798470906896782"
+        },
+        {
+          "file": "host/src/assets/react.svg",
+          "hash": "16069471864800376455"
+        },
+        {
+          "file": "host/src/index.css",
+          "hash": "13504153635654440336"
+        },
+        {
+          "file": "host/src/main.tsx",
+          "hash": "11038211546439381838"
+        },
+        {
+          "file": "host/src/pluginsList.ts",
+          "hash": "2466147954032677664"
+        },
+        {
+          "file": "host/tsconfig.app.json",
+          "hash": "7027506972007006058"
+        },
+        {
+          "file": "host/tsconfig.json",
+          "hash": "2365188958523842680"
+        },
+        {
+          "file": "host/tsconfig.node.json",
+          "hash": "8816433916198377435"
+        },
+        {
+          "file": "host/vite.config.ts",
+          "hash": "376044481379106508"
+        }
+      ],
+      "example-plugin-react-peer": [
+        {
+          "file": "plugins/example-plugin-react-peer/dist/index.js",
+          "hash": "6012703481912168634"
+        },
+        {
+          "file": "plugins/example-plugin-react-peer/dist/manifest.json",
+          "hash": "13170415428849321368"
+        },
+        {
+          "file": "plugins/example-plugin-react-peer/package.json",
+          "hash": "1284103660041587381",
+          "deps": [
+            "npm:react",
+            "npm:react-dom",
+            "npm:@types/react",
+            "@acme/plugin-tools",
+            "npm:@vitejs/plugin-react@4.0.0",
+            "npm:typescript",
+            "npm:vite",
+            "@acme/plugin-react",
+            "@acme/plugin-runtime",
+            "@acme/plugin-contracts"
+          ]
+        },
+        {
+          "file": "plugins/example-plugin-react-peer/src/PluginRoot.tsx",
+          "hash": "12854870529643141594"
+        },
+        {
+          "file": "plugins/example-plugin-react-peer/src/index.ts",
+          "hash": "18106132512130795396"
+        },
+        {
+          "file": "plugins/example-plugin-react-peer/src/meta.ts",
+          "hash": "5759011602966923014"
+        },
+        {
+          "file": "plugins/example-plugin-react-peer/tsconfig.json",
+          "hash": "4445737218291622516"
+        },
+        {
+          "file": "plugins/example-plugin-react-peer/vite.config.ts",
+          "hash": "10499477707480349301"
+        }
+      ],
+      "@acme/plugin-react": [
+        {
+          "file": "packages/plugin-react/package.json",
+          "hash": "18200425051790444627",
+          "deps": [
+            "npm:react",
+            "npm:@types/react",
+            "npm:typescript",
+            "@acme/plugin-contracts"
+          ]
+        },
+        {
+          "file": "packages/plugin-react/src/hooks.ts",
+          "hash": "11612491337717794245"
+        },
+        {
+          "file": "packages/plugin-react/src/index.ts",
+          "hash": "23093213072346540"
+        },
+        {
+          "file": "packages/plugin-react/src/plugin-context.tsx",
+          "hash": "15403732704576377043"
+        },
+        {
+          "file": "packages/plugin-react/tsconfig.json",
+          "hash": "11556357538276044971"
+        }
+      ],
+      "@acme/plugin-tools": [
+        {
+          "file": "packages/plugin-tools/dist/index.d.ts",
+          "hash": "8078809571977648241"
+        },
+        {
+          "file": "packages/plugin-tools/dist/index.js",
+          "hash": "1753047941124610220"
+        },
+        {
+          "file": "packages/plugin-tools/package.json",
+          "hash": "14327472372898972112",
+          "deps": [
+            "npm:@types/node",
+            "npm:vite",
+            "npm:typescript",
+            "@acme/plugin-contracts"
+          ]
+        },
+        {
+          "file": "packages/plugin-tools/src/index.ts",
+          "hash": "11583366397219417970"
+        },
+        {
+          "file": "packages/plugin-tools/tsconfig.json",
+          "hash": "18061194484041161718"
+        },
+        {
+          "file": "packages/plugin-tools/vite.config.ts",
+          "hash": "14743325641731961215"
+        }
+      ]
+    },
+    "nonProjectFiles": [
+      {
+        "file": ".gitignore",
+        "hash": "7733576510449282146"
+      },
+      {
+        "file": ".vscode/settings.json",
+        "hash": "3063541373514435306"
+      },
+      {
+        "file": "AGENTS.md",
+        "hash": "15273002152789961672"
+      },
+      {
+        "file": "README.md",
+        "hash": "11146901678558162083"
+      },
+      {
+        "file": "package.json",
+        "hash": "6115211372942848645"
+      },
+      {
+        "file": "pnpm-lock.yaml",
+        "hash": "899224598929557138"
+      },
+      {
+        "file": "pnpm-workspace.yaml",
+        "hash": "8973567892460953170"
+      },
+      {
+        "file": "presentazione/Presentazione.pdf",
+        "hash": "13693467484969726224"
+      },
+      {
+        "file": "presentazione/Reacme_Plugin_Architecture.pdf",
+        "hash": "693478673791852280"
+      }
+    ]
+  }
+}

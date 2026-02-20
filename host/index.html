@@ -5,11 +5,11 @@
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>host</title>
+    <!-- Permette all'Host di fornire react ai plugin che dichiarano react come peer dependency ed external.
+      Quando un plugin fa import React from "react", il browser carica /@id/react.
+      @id e un endpoint interno del vite dev server; in produzione serve un URL statico/CDN.
+    -->
     <script type="importmap">
-      <!-- Permette all'Host di fornire react ai plugin che dichiarano react come peerdependency ed externals.
-        Quando un plugin fa import React from "react", il browser carica /@id/react.
-        @id è un endpoin interno di vite dev server - mentre in produzione servirebbe una cdn
-      -->
       {
         "imports": {
           "react": "/@id/react",

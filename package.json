@@ -8,6 +8,8 @@
     "dev:host": "pnpm --filter host run dev",
     "dev:POC": "pnpm -r --parallel dev",
     "build": "pnpm -r build",
-    "check:ts": "pnpm -r run check:ts"
+    "build:contract": "pnpm --filter @acme/plugin-contracts run build",
+    "check:ts": "pnpm -r run check:ts",
+    "graph": "npx nx graph"
   }
 }

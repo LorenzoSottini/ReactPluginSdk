@@ -3,7 +3,6 @@ import type {
   PluginElementWithCtx,
   PluginManifest,
 } from "@acme/plugin-contracts";
-import { PLUGIN_TAGS } from "@acme/plugin-contracts";
 
 export async function loadPluginFromManifest(options: {
   manifestUrl: string;
@@ -23,7 +22,7 @@ export async function loadPluginFromManifest(options: {
   await import(/* @vite-ignore */ entryUrl);
 
   const pluginEl = document.createElement(
-    PLUGIN_TAGS[manifest.type],
+    manifest.tagName, // nome del tag fornito by contract
   ) as PluginElementWithCtx;
   // Aggiunta dell'id sul nodo
   pluginEl.setAttribute("plugin-id", manifest.id);
