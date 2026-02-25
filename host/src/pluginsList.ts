@@ -10,4 +10,4 @@ export const PLUGINS_AVAILABLE = {
   EXAMPLE_ANGULAR: {
     manifestUrl: "http://localhost:5176/dist/manifest.json",
   },
-};
+} as const;
