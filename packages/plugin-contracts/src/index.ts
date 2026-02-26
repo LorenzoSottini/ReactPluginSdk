@@ -1,66 +1,23 @@
-import type { HostServices, HostUser } from "./Services";
-export * from "./Services";
-import packageJson from "../package.json";
+import { PluginDefinition } from "./DefinitionsTypes";
+import { PluginTypes } from "./Plugin";
 
-/** Versione del contratto derivata dal package */
-export const CONTRACT_VERSION = packageJson.version;
-export type ContractVersion = typeof CONTRACT_VERSION;
+export { CONTRACT_VERSION, PLUGIN_TYPES, composeTagName } from "./Plugin";
 
-/** Tipi di plugin supportati */
-export const PLUGIN_TYPES = {
-  ROUTE: "ROUTE",
-  WIDGET: "WIDGET",
-  COMMAND: "COMMAND",
-} as const;
-export type PluginTypes = keyof typeof PLUGIN_TYPES;
+export type {
+  PluginManifest,
+  PluginMeta,
+  PluginTags,
+  PluginTypes,
+} from "./Plugin";
 
-/** Mapping dei WebComponent Tag by PluginType */
-export const PLUGIN_TAGS_PREFIX = {
-  ROUTE: "plugin-route",
-  COMMAND: "plugin-command",
-  WIDGET: "plugin-widget",
-} as const satisfies Record<PluginTypes, string>;
-export type PluginTags = (typeof PLUGIN_TAGS_PREFIX)[PluginTypes];
+export type { HostUser, HostServices } from "./ServicesTypes";
 
-export function composeTagName<TP extends PluginTypes>(
-  id: PluginMeta["id"],
-  type: TP,
-): PluginManifest<TP>["tagName"] {
-  return `${PLUGIN_TAGS_PREFIX[type]}-${id}`;
-}
+export type { CustomSettings, UserSettings } from "./SettingsTypes";
 
-/**
- * Manifest statico del plugin:
- * metadati e entry ESM usati dall'host per discovery e caricamento.
- * Non rappresenta stato runtime del plugin.
- */
-export type PluginManifest<PT extends PluginTypes = PluginTypes> =
-  PluginMeta & {
-    type: PT;
-    tagName: `${(typeof PLUGIN_TAGS_PREFIX)[PT]}-${PluginMeta["id"]}`;
-    version: string;
-    contractVersion: ContractVersion;
-    entry: string;
-  };
+export type { PluginContext, PluginElementWithCtx } from "./ContextTypes";
 
-/**
- * Definizione statica del manifest senza le informazioni generate in fase di build
- */
-export type PluginMeta = {
-  type: PluginTypes;
-  /** Alfanumerico generetato dalla CLI */
-  id: string;
-  name: string;
-  description: string;
-};
+export type { PluginDefinition, MountFunction } from "./DefinitionsTypes";
 
-export type PluginContext<PT extends PluginTypes = PluginTypes> = {
-  contractVersion: ContractVersion;
-  manifest: PluginManifest<PT>;
-  user: HostUser;
-  services: HostServices;
-};
-
-export type PluginElementWithCtx = HTMLElement & {
-  ctx: PluginContext;
+export type PluginModule = {
+  default: PluginDefinition<PluginTypes>;
 };

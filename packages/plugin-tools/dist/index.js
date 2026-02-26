@@ -1,4 +1,4 @@
-import { PLUGIN_TAGS_PREFIX, CONTRACT_VERSION } from "@acme/plugin-contracts";
+import { composeTagName, CONTRACT_VERSION } from "@acme/plugin-contracts";
 import { mkdir, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 function postBuildPluginManifest({
@@ -14,7 +14,7 @@ function postBuildPluginManifest({
     async closeBundle() {
       const pluginManifest = {
         ...meta,
-        tagName: `${PLUGIN_TAGS_PREFIX[meta.type]}-${meta.id}`,
+        tagName: composeTagName(meta.id, meta.type),
         contractVersion: CONTRACT_VERSION,
         version,
         entry

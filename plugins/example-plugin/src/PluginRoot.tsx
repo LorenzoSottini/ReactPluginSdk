@@ -1,7 +1,7 @@
 import { useServices, useUser, useManifest } from "@acme/plugin-react";
-import { useState } from "react";
+import { FC, useState } from "react";
 
-export function PluginRoot() {
+export const PluginRoot: FC = () => {
   const services = useServices();
   const manifest = useManifest();
   const user = useUser();
@@ -46,4 +46,4 @@ export function PluginRoot() {
       </div>
     </div>
   );
-}
+};

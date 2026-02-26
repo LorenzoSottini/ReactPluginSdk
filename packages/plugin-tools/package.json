@@ -25,7 +25,11 @@
   },
   "devDependencies": {
     "@types/node": "^24.10.1",
-    "vite": "catalog:",
-    "typescript": "catalog:"
+    "eslint": "^9.39.1",
+    "eslint-plugin-import": "^2.32.0",
+    "@typescript-eslint/eslint-plugin": "^8",
+    "@typescript-eslint/parser": "^8",
+    "typescript": "catalog:",
+    "vite": "catalog:"
   }
 }

@@ -1,33 +1,33 @@
 import {
   composeTagName,
   type PluginContext,
+  type PluginDefinition,
   type PluginElementWithCtx,
-  type PluginMeta,
   type PluginTypes,
 } from "@acme/plugin-contracts";
 import {
   getPluginFromRegistry,
   setPluginInTypeRegistry,
-} from "./PluginRegistry";
+} from "./PluginRegistryService";
 
 export const PLUGIN_ID_ATTR = "plugin-id";
 
-export type PluginMount<PT extends PluginTypes> = (
-  container: HTMLDivElement,
-  ctx: PluginContext<PT>,
-) => (() => void) | void;
+export function registerPluginWebComponent<PT extends PluginTypes>(
+  pluginDefinition: PluginDefinition<PT>,
+) {
+  const { type, id, mount } = pluginDefinition;
 
-export function registerPluginWebComponent<PT extends PluginTypes>({
-  plugin,
-  mount,
-}: {
-  plugin: PluginMeta & { type: PT };
-  mount: PluginMount<PT>;
-}) {
-  const type = plugin.type;
-  const tag = composeTagName(plugin.id, plugin.type);
+  const tag = composeTagName(id, type);
+  if (customElements.get(tag)) {
+    console.warn(`Plugin ${id} already registered`);
+    return;
+  }
 
-  setPluginInTypeRegistry(plugin, (container, ctx) =>
+  if (!mount || typeof mount !== "function") {
+    throw new Error(`Missing mount function in pluginDefinition of ${id}`);
+  }
+
+  setPluginInTypeRegistry(pluginDefinition, (container, ctx) =>
     mount(container, ctx as PluginContext<PT>),
   );
 

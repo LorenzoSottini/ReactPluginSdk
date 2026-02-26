@@ -1,11 +1,10 @@
 import * as angular from "angular";
 import type { PluginContext } from "@acme/plugin-contracts";
-import { registerPluginWebComponent } from "@acme/plugin-runtime";
 import { META } from "./meta";
 
-type AngularContext = PluginContext<typeof META.type>;
+type Context = PluginContext<typeof META.type>;
 
-function mountAngularPlugin(container: HTMLDivElement, ctx: AngularContext) {
+function mountAngularPlugin(container: HTMLDivElement, ctx: Context) {
   const appName = `acme.ng1.${META.id.replace(/[^a-z0-9]/gi, "_")}`;
   const app = angular.module(appName, []);
   app.constant("pluginCtx", ctx);
@@ -13,10 +12,10 @@ function mountAngularPlugin(container: HTMLDivElement, ctx: AngularContext) {
   class PluginRootController {
     static $inject = ["pluginCtx"] as const;
 
-    user: AngularContext["user"];
+    user: Context["user"];
     pluginName: string;
 
-    constructor(private readonly pluginCtx: AngularContext) {
+    constructor(private readonly pluginCtx: Context) {
       this.user = pluginCtx.user;
       this.pluginName = pluginCtx.manifest.name;
     }
@@ -55,7 +54,9 @@ function mountAngularPlugin(container: HTMLDivElement, ctx: AngularContext) {
   };
 }
 
-registerPluginWebComponent({
-  plugin: META,
+const plugin = {
+  ...META,
   mount: mountAngularPlugin,
-});
+};
+
+export default plugin;

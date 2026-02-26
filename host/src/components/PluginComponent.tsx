@@ -7,7 +7,10 @@ type PluginComponentProps = {
   manifestUrl: string;
   user: HostUser;
 };
-export const PluginComponent: FC<PluginComponentProps> = ({ manifestUrl, user }) => {
+export const PluginComponent: FC<PluginComponentProps> = ({
+  manifestUrl,
+  user,
+}) => {
   const hostElementRef = useRef<HTMLDivElement>(null);
   const [status, setStatus] = useState("waiting");
   const [error, setError] = useState<string | null>(null);
@@ -23,7 +26,7 @@ export const PluginComponent: FC<PluginComponentProps> = ({ manifestUrl, user })
         if (disposed || !hostElementRef.current) return;
         await loadPluginFromManifest({
           manifestUrl: manifestUrl,
-          mount: hostElementRef.current,
+          hostElement: hostElementRef.current,
           user: user,
           services: HostServiceInstance,
         });

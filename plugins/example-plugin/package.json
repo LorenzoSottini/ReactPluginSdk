@@ -3,22 +3,27 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "build": "vite build",
+    "build": "pnpm lint && vite build",
     "dev": "vite",
+    "lint": "eslint .",
     "check:ts": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
-    "@acme/plugin-react": "workspace:*",
-    "@acme/plugin-runtime": "workspace:*",
     "@acme/plugin-contracts": "workspace:*",
+    "@acme/plugin-react": "workspace:*",
     "react": "catalog:",
     "react-dom": "catalog:"
   },
   "devDependencies": {
+    "@acme/plugin-eslint-config": "workspace:*",
     "@acme/plugin-tools": "workspace:*",
     "@types/react": "^19.2.14",
-    "@vitejs/plugin-react": "4.0.0",
+    "@vitejs/plugin-react": "catalog:",
     "typescript": "catalog:",
-    "vite": "catalog:"
+    "vite": "catalog:",
+    "eslint": "^9.0.0",
+    "@typescript-eslint/eslint-plugin": "^8.0.0",
+    "@typescript-eslint/parser": "^8.0.0",
+    "eslint-plugin-import": "^2.29.0"
   }
 }

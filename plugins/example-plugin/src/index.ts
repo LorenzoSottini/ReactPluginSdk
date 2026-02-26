@@ -1,5 +1,4 @@
 import { definePlugin } from "@acme/plugin-react";
-import { registerReactPluginWebComponent } from "@acme/plugin-runtime";
 import { PluginRoot } from "./PluginRoot";
 import { META } from "./meta";
 
@@ -13,6 +12,4 @@ const plugin = definePlugin({
   },
 });
 
-registerReactPluginWebComponent({
-  plugin,
-});
+export default plugin;

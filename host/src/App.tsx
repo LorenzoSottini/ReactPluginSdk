@@ -21,14 +21,6 @@ function App() {
           >
             Plugin List
           </NavLink>
-          <NavLink
-            to="/angularJs"
-            className={({ isActive }) =>
-              isActive ? "font-semibold underline" : "text-muted-foreground"
-            }
-          >
-            Angular Js
-          </NavLink>
         </div>
         <h1> POC ReactPlugins </h1>
       </nav>

@@ -1,52 +1,12 @@
-import type { HostServices, HostUser } from "./Services";
-export * from "./Services";
-/** Versione del contratto derivata dal package */
-export declare const CONTRACT_VERSION: string;
-export type ContractVersion = typeof CONTRACT_VERSION;
-/** Tipi di plugin supportati */
-export declare const PLUGIN_TYPES: {
-    readonly ROUTE: "ROUTE";
-    readonly WIDGET: "WIDGET";
-    readonly COMMAND: "COMMAND";
-};
-export type PluginTypes = keyof typeof PLUGIN_TYPES;
-/** Mapping dei WebComponent Tag by PluginType */
-export declare const PLUGIN_TAGS_PREFIX: {
-    readonly ROUTE: "plugin-route";
-    readonly COMMAND: "plugin-command";
-    readonly WIDGET: "plugin-widget";
-};
-export type PluginTags = (typeof PLUGIN_TAGS_PREFIX)[PluginTypes];
-export declare function composeTagName<TP extends PluginTypes>(id: PluginMeta["id"], type: TP): PluginManifest<TP>["tagName"];
-/**
- * Manifest statico del plugin:
- * metadati e entry ESM usati dall'host per discovery e caricamento.
- * Non rappresenta stato runtime del plugin.
- */
-export type PluginManifest<PT extends PluginTypes = PluginTypes> = PluginMeta & {
-    type: PT;
-    tagName: `${(typeof PLUGIN_TAGS_PREFIX)[PT]}-${PluginMeta["id"]}`;
-    version: string;
-    contractVersion: ContractVersion;
-    entry: string;
-};
-/**
- * Definizione statica del manifest senza le informazioni generate in fase di build
- */
-export type PluginMeta = {
-    type: PluginTypes;
-    /** Alfanumerico generetato dalla CLI */
-    id: string;
-    name: string;
-    description: string;
-};
-export type PluginContext<PT extends PluginTypes = PluginTypes> = {
-    contractVersion: ContractVersion;
-    manifest: PluginManifest<PT>;
-    user: HostUser;
-    services: HostServices;
-};
-export type PluginElementWithCtx = HTMLElement & {
-    ctx: PluginContext;
+import { PluginDefinition } from "./DefinitionsTypes";
+import { PluginTypes } from "./Plugin";
+export { CONTRACT_VERSION, PLUGIN_TYPES, composeTagName } from "./Plugin";
+export type { PluginManifest, PluginMeta, PluginTags, PluginTypes, } from "./Plugin";
+export type { HostUser, HostServices } from "./ServicesTypes";
+export type { CustomSettings, UserSettings } from "./SettingsTypes";
+export type { PluginContext, PluginElementWithCtx } from "./ContextTypes";
+export type { PluginDefinition, MountFunction } from "./DefinitionsTypes";
+export type PluginModule = {
+    default: PluginDefinition<PluginTypes>;
 };
 //# sourceMappingURL=index.d.ts.map

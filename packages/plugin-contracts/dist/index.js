@@ -5,20 +5,23 @@ const packageJson = {
 const CONTRACT_VERSION = packageJson.version;
 const PLUGIN_TYPES = {
   ROUTE: "ROUTE",
-  WIDGET: "WIDGET",
-  COMMAND: "COMMAND"
+  WIDGET_DESKTOP: "WIDGET_DESKTOP",
+  WIDGET_TASK: "WIDGET_TASK",
+  COMMAND: "COMMAND",
+  COMMAND_PROFILATION: "COMMAND_PROFILATION"
 };
 const PLUGIN_TAGS_PREFIX = {
   ROUTE: "plugin-route",
   COMMAND: "plugin-command",
-  WIDGET: "plugin-widget"
+  WIDGET_DESKTOP: "plugin-widget",
+  WIDGET_TASK: "plugin-widget-task",
+  COMMAND_PROFILATION: "plugin-command-profilation"
 };
 function composeTagName(id, type) {
   return `${PLUGIN_TAGS_PREFIX[type]}-${id}`;
 }
 export {
   CONTRACT_VERSION,
-  PLUGIN_TAGS_PREFIX,
   PLUGIN_TYPES,
   composeTagName
 };

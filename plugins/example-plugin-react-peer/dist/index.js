@@ -1,19 +1,13 @@
-import { jsx, jsxs } from "react/jsx-runtime";
-import React, { createContext, useContext, useState } from "react";
+import { createContext, useContext, createElement, useState } from "react";
 import ReactDOM from "react-dom/client";
+import { jsx, jsxs } from "react/jsx-runtime";
 const PLUGIN_TYPES = {
   ROUTE: "ROUTE",
-  WIDGET: "WIDGET",
-  COMMAND: "COMMAND"
+  WIDGET_DESKTOP: "WIDGET_DESKTOP",
+  WIDGET_TASK: "WIDGET_TASK",
+  COMMAND: "COMMAND",
+  COMMAND_PROFILATION: "COMMAND_PROFILATION"
 };
-const PLUGIN_TAGS_PREFIX = {
-  ROUTE: "plugin-route",
-  COMMAND: "plugin-command",
-  WIDGET: "plugin-widget"
-};
-function composeTagName(id, type) {
-  return `${PLUGIN_TAGS_PREFIX[type]}-${id}`;
-}
 const PluginReactContext = createContext(null);
 function PluginProvider(ctx, children) {
   return /* @__PURE__ */ jsx(PluginReactContext.Provider, { value: ctx, children });
@@ -25,6 +19,47 @@ function usePluginContext() {
   }
   return ctx;
 }
+function validateConfig(config) {
+  if (!config || typeof config !== "object") {
+    throw new Error("Invalid config: expected object");
+  }
+  if (typeof config.id !== "string" || config.id.trim().length === 0) {
+    throw new Error("Invalid config: 'id' is required");
+  }
+  if (typeof config.type !== "string" || !(config.type in PLUGIN_TYPES)) {
+    throw new Error(
+      `Invalid config: 'type' must be one of ${Object.keys(PLUGIN_TYPES).join(
+        ", "
+      )}`
+    );
+  }
+  if (typeof config.Root !== "function") {
+    throw new Error("Invalid config: 'Root' must be a component");
+  }
+  if (config.activate !== void 0 && typeof config.activate !== "function") {
+    throw new Error("Invalid config: 'activate' must be a function");
+  }
+}
+function definePlugin(config) {
+  validateConfig(config);
+  const { Root, activate, ...meta } = config;
+  const mount = (container, ctx) => {
+    const root = ReactDOM.createRoot(container);
+    root.render(PluginProvider(ctx, createElement(Root)));
+    let cleanup;
+    if (activate) {
+      console.log(`Plugin Activated: ${meta.name}`);
+      const result = activate(ctx);
+      if (typeof result === "function") cleanup = result;
+    }
+    return () => {
+      cleanup?.();
+      root.unmount();
+      console.log(`Plugin Deactivated: ${config.name}`);
+    };
+  };
+  return { ...meta, mount };
+}
 function useServices() {
   return usePluginContext().services;
 }
@@ -33,132 +68,6 @@ function useUser() {
 }
 function useManifest() {
   return usePluginContext().manifest;
-}
-function definePlugin(def) {
-  if (!def || typeof def !== "object") {
-    throw new Error(
-      "[definePlugin] Invalid plugin definition: expected object"
-    );
-  }
-  if (typeof def.id !== "string" || def.id.trim().length === 0) {
-    throw new Error(
-      "[definePlugin] Invalid plugin definition: 'id' is required"
-    );
-  }
-  if (typeof def.type !== "string" || !(def.type in PLUGIN_TYPES)) {
-    throw new Error(
-      `[definePlugin] Invalid plugin definition: 'type' must be one of ${Object.keys(
-        PLUGIN_TYPES
-      ).join(", ")}`
-    );
-  }
-  if (typeof def.Root !== "function") {
-    throw new Error(
-      "[definePlugin] Invalid plugin definition: 'Root' must be a component"
-    );
-  }
-  if (def.activate !== void 0 && typeof def.activate !== "function") {
-    throw new Error(
-      "[definePlugin] Invalid plugin definition: 'activate' must be a function"
-    );
-  }
-  return def;
-}
-const GLOBAL_PLUGIN_REGISTRY_KEY = "__acme_plugin_registry__";
-function getGlobalPluginRegistry() {
-  const runtimeGlobal = globalThis;
-  runtimeGlobal[GLOBAL_PLUGIN_REGISTRY_KEY] ??= /* @__PURE__ */ new Map();
-  return runtimeGlobal[GLOBAL_PLUGIN_REGISTRY_KEY];
-}
-const pluginRegistry = getGlobalPluginRegistry();
-function getPluginFromRegistry(type, id) {
-  return pluginRegistry.get(type)?.get(id);
-}
-function setPluginInTypeRegistry(plugin2, mount) {
-  const type = plugin2.type;
-  let typeRegistry = pluginRegistry.get(type);
-  if (!typeRegistry) {
-    typeRegistry = /* @__PURE__ */ new Map();
-    pluginRegistry.set(type, typeRegistry);
-  }
-  typeRegistry.set(plugin2.id, { plugin: plugin2, mount });
-}
-const PLUGIN_ID_ATTR = "plugin-id";
-function registerPluginWebComponent({
-  plugin: plugin2,
-  mount
-}) {
-  const type = plugin2.type;
-  const tag = composeTagName(plugin2.id, plugin2.type);
-  setPluginInTypeRegistry(
-    plugin2,
-    (container, ctx) => mount(container, ctx)
-  );
-  class PluginElement extends HTMLElement {
-    ctx;
-    unmount;
-    container;
-    shadow;
-    connectedCallback() {
-      if (this.unmount) return;
-      const element = this;
-      const ctx = element.ctx;
-      if (!ctx) {
-        throw new Error("Context not provided!");
-      }
-      const pluginId = this.getAttribute(PLUGIN_ID_ATTR);
-      if (!pluginId) {
-        throw new Error(`Missing ${PLUGIN_ID_ATTR} attribute!`);
-      }
-      const registration = getPluginFromRegistry(type, pluginId);
-      if (!registration) {
-        throw new Error(
-          `Plugin not registered for type "${type}" and id "${pluginId}"`
-        );
-      }
-      if (ctx.manifest.type !== type) {
-        throw new Error(
-          `Context type mismatch: expected "${type}", got "${ctx.manifest.type}"`
-        );
-      }
-      this.shadow = this.shadowRoot ?? this.attachShadow({ mode: "open" });
-      this.container = document.createElement("div");
-      this.shadow.replaceChildren(this.container);
-      const teardown = registration.mount(
-        this.container,
-        ctx
-      );
-      if (typeof teardown === "function") this.unmount = teardown;
-    }
-    disconnectedCallback() {
-      this.unmount?.();
-      this.unmount = void 0;
-      this.container?.remove();
-      this.container = void 0;
-      this.shadow = void 0;
-    }
-  }
-  if (!customElements.get(tag)) {
-    customElements.define(tag, PluginElement);
-  }
-}
-function registerReactPluginWebComponent({ plugin: plugin2 }) {
-  registerPluginWebComponent({
-    plugin: plugin2,
-    mount: (container, ctx) => {
-      const root = ReactDOM.createRoot(container);
-      root.render(PluginProvider(ctx, React.createElement(plugin2.Root)));
-      let cleanup;
-      if (plugin2.activate) {
-        const result = plugin2.activate(ctx);
-        if (typeof result === "function") cleanup = result;
-      }
-      return () => {
-        cleanup?.();
-        root.unmount();
-      };
-    }
-  });
 }
 function PluginRoot() {
   const services = useServices();
@@ -224,7 +133,7 @@ const META = {
   // Sarà generato dalla CLI
   name: "Plugin React in PeerPlugin React",
   description: "Plugin ROUTE con React che viene fornito dall'host",
-  type: "WIDGET"
+  type: "WIDGET_DESKTOP"
 };
 const plugin = definePlugin({
   ...META,
@@ -234,6 +143,6 @@ const plugin = definePlugin({
     return () => ctx.services.toast.show(`Plugin deactivated ${ctx.manifest.name}`);
   }
 });
-registerReactPluginWebComponent({
-  plugin
-});
+export {
+  plugin as default
+};
