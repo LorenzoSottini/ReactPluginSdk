@@ -51,28 +51,6 @@ Dipendenze minime (dev):
 - `@typescript-eslint/parser@^8`
 - `eslint-plugin-import@^2.29`
 
-## Contratto aggiornato
-
-File chiave: `packages/plugin-contracts/src/index.ts`
-
-Punti importanti:
-
-- tipi plugin: `PLUGIN_TYPES` (`ROUTE`, `WIDGET`, `COMMAND`)
-- prefisso tag per tipo: `PLUGIN_TAGS_PREFIX`
-- `PluginManifest` ora include `tagName` (non piu derivato solo lato host)
-
-Estratto semplificato:
-
-```ts
-export type PluginManifest<PT extends PluginTypes = PluginTypes> = PluginMeta & {
-  type: PT;
-  tagName: `${(typeof PLUGIN_TAGS_PREFIX)[PT]}-${PluginMeta["id"]}`;
-  version: string;
-  contractVersion: ContractVersion;
-  entry: string;
-};
-```
-
 ## Lifecycle runtime
 
 1. Host scarica `manifest.json`

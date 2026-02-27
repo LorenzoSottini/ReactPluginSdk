@@ -1,13 +1,24 @@
-import type { PluginContext, PluginMeta, PluginTypes } from "@acme/plugin-contracts";
+import type {
+  CommandPluginTypes,
+  CommandContext,
+  CommandDescriptor,
+  CommandExecuteFor,
+  CommandResult,
+  PluginContext,
+  PluginMeta,
+  PluginTypes,
+} from "@acme/plugin-contracts";
 
 const GLOBAL_PLUGIN_REGISTRY_KEY = "__acme_plugin_registry__";
 
 export type RegisteredPlugin = {
   plugin: PluginMeta;
-  mount: (
+  mount?: (
     container: HTMLDivElement,
     ctx: PluginContext<PluginTypes>,
   ) => (() => void) | void;
+  command?: CommandDescriptor<CommandPluginTypes>;
+  execute?: CommandExecuteFor<CommandPluginTypes>;
 };
 
 export type PluginRegistry = Map<
@@ -41,10 +52,35 @@ export function getPluginFromRegistry(
   return pluginRegistry.get(type)?.get(id);
 }
 
+export function getCommandDescriptorFromRegistry<T extends CommandPluginTypes>(
+  type: T,
+  id: string,
+): CommandDescriptor<T> | undefined {
+  const registration = pluginRegistry.get(type)?.get(id);
+  return registration?.command as CommandDescriptor<T> | undefined;
+}
+
+export async function executeRegisteredCommand<T extends CommandPluginTypes>(
+  type: T,
+  id: string,
+  pluginContext: PluginContext<T>,
+  commandContext: CommandContext,
+): Promise<CommandResult> {
+  const registration = pluginRegistry.get(type)?.get(id);
+  if (!registration || typeof registration.execute !== "function") {
+    throw new Error(`Command plugin "${id}" (${type}) is not executable`);
+  }
+  return (
+    registration as RegisteredPlugin & {
+      execute: CommandExecuteFor<T>;
+    }
+  ).execute(pluginContext, commandContext);
+}
+
 /** Registra la Definizione del plugin sul registry, assicurandosi che il Map per Type si presente o meno */
 export function setPluginInTypeRegistry(
   plugin: PluginMeta,
-  mount: RegisteredPlugin["mount"],
+  registration: Omit<RegisteredPlugin, "plugin">,
 ): void {
   const type = plugin.type;
   let typeRegistry = pluginRegistry.get(type);
@@ -52,5 +88,5 @@ export function setPluginInTypeRegistry(
     typeRegistry = new Map<string, RegisteredPlugin>();
     pluginRegistry.set(type, typeRegistry);
   }
-  typeRegistry.set(plugin.id, { plugin, mount });
+  typeRegistry.set(plugin.id, { plugin, ...registration });
 }

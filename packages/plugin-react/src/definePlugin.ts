@@ -1,16 +1,27 @@
 import {
+  CommandDescriptor,
+  CommandExecuteFor,
+  CommandPluginTypes,
+  CommandPluginDefinition,
   MountFunction,
-  PLUGIN_TYPES,
   PluginContext,
-  PluginDefinition,
   PluginMeta,
-  PluginTypes,
+  StandardPluginDefinition,
+  StandardPluginTypes,
 } from "@acme/plugin-contracts";
 import { ComponentType, createElement } from "react";
 import ReactDOM from "react-dom/client";
 import { PluginProvider } from "./plugin-context";
+import {
+  validateActivate,
+  validateBaseCommand,
+  validateBaseConfig,
+  validateId,
+  validateKnownPluginType,
+  validateRoot,
+} from "./validationConfig";
 
-export type DefineConfig<PT extends PluginTypes> = PluginMeta & {
+export type DefineConfig<PT extends StandardPluginTypes> = PluginMeta & {
   type: PT;
   /** Componente da renderizzare nel plugin */
   Root: ComponentType;
@@ -23,55 +34,39 @@ export type DefineConfig<PT extends PluginTypes> = PluginMeta & {
   activate?: (ctx: PluginContext<PT>) => void | (() => void);
 };
 
+export type DefineCommandConfig<
+  PT extends CommandPluginTypes = CommandPluginTypes,
+> = PluginMeta & {
+  type: PT;
+  command: CommandDescriptor<PT>;
+  execute: CommandExecuteFor<PT>;
+  Root?: ComponentType;
+  activate?: (ctx: PluginContext<PT>) => void | (() => void);
+};
+
 /** Validazione della config */
-function validateConfig<PT extends PluginTypes>(
+function validateConfig<PT extends StandardPluginTypes>(
   config: DefineConfig<PT>,
 ): void {
-  if (!config || typeof config !== "object") {
-    throw new Error("Invalid config: expected object");
-  }
-
-  if (typeof config.id !== "string" || config.id.trim().length === 0) {
-    throw new Error("Invalid config: 'id' is required");
-  }
-
-  if (typeof config.type !== "string" || !(config.type in PLUGIN_TYPES)) {
-    throw new Error(
-      `Invalid config: 'type' must be one of ${Object.keys(PLUGIN_TYPES).join(
-        ", ",
-      )}`,
-    );
-  }
-
-  if (typeof config.Root !== "function") {
-    throw new Error("Invalid config: 'Root' must be a component");
-  }
-
-  if (config.activate !== undefined && typeof config.activate !== "function") {
-    throw new Error("Invalid config: 'activate' must be a function");
-  }
+  validateBaseConfig(config);
+  validateId(config);
+  validateKnownPluginType(config);
+  validateRoot(config, true);
+  validateActivate(config);
 }
 
-export function definePlugin<PT extends PluginTypes>(
-  config: DefineConfig<PT>,
-): PluginDefinition<PT> {
-  validateConfig(config);
-
-  const { Root, activate, ...meta } = config;
-
-  // Mount del plugin nel container
-  // In fase di register Plugin l'host invoca la mount passando il container e il ctx
-  const mount: MountFunction<PT> = (
-    container: HTMLDivElement,
-    ctx: PluginContext<PT>,
-  ) => {
+function createReactMount<PT extends StandardPluginTypes | CommandPluginTypes>(
+  Root: ComponentType,
+  activate: ((ctx: PluginContext<PT>) => void | (() => void)) | undefined,
+  pluginName: string,
+): MountFunction<PT> {
+  return (container: HTMLDivElement, ctx: PluginContext<PT>) => {
     const root = ReactDOM.createRoot(container);
-    // Renderizzazione del pluginRoot con il provider
     root.render(PluginProvider(ctx, createElement(Root)));
 
     let cleanup: (() => void) | undefined;
     if (activate) {
-      console.log(`Plugin Activated: ${meta.name}`);
+      console.log(`Plugin Activated: ${pluginName}`);
       const result = activate(ctx);
       if (typeof result === "function") cleanup = result;
     }
@@ -79,9 +74,39 @@ export function definePlugin<PT extends PluginTypes>(
     return () => {
       cleanup?.();
       root.unmount();
-      console.log(`Plugin Deactivated: ${config.name}`);
+      console.log(`Plugin Deactivated: ${pluginName}`);
     };
   };
+}
 
+export function definePlugin<PT extends StandardPluginTypes>(
+  config: DefineConfig<PT>,
+): StandardPluginDefinition<PT> {
+  validateConfig(config);
+
+  const { Root, activate, ...meta } = config;
+  const mount = createReactMount<PT>(Root, activate, config.name);
   return { ...(meta satisfies PluginMeta), mount };
+}
+
+export function defineCommandPlugin<PT extends CommandPluginTypes>(
+  config: DefineCommandConfig<PT>,
+): CommandPluginDefinition<PT> {
+  validateBaseConfig(config);
+  validateId(config);
+  validateBaseCommand(config);
+  validateRoot(config, false);
+  validateActivate(config);
+
+  const { Root, activate, command, execute, ...meta } = config;
+  const mount = Root
+    ? createReactMount<PT>(Root, activate, config.name)
+    : undefined;
+
+  return {
+    ...(meta satisfies PluginMeta),
+    command,
+    execute,
+    ...(mount ? { mount } : {}),
+  };
 }

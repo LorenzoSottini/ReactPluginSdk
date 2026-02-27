@@ -4,6 +4,8 @@ export {
   getGlobalPluginRegistry,
   setPluginInTypeRegistry,
   getPluginFromRegistry,
+  getCommandDescriptorFromRegistry,
+  executeRegisteredCommand,
 } from "./PluginRegistryService";
 
 export type { PluginRegistry, RegisteredPlugin } from "./PluginRegistryService";

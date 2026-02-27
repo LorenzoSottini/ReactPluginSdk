@@ -13,7 +13,13 @@
     },
     "type": {
       "type": "string",
-      "enum": ["ROUTE", "WIDGET", "COMMAND"],
+      "enum": [
+        "ROUTE",
+        "COMMAND",
+        "WIDGET_DESKTOP",
+        "WIDGET_TASK",
+        "COMMAND_PROFILATION"
+      ],
       "description": "Tipo di plugin"
     },
     "id": {

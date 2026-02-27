@@ -1,5 +1,10 @@
 import {
+  PLUGIN_TYPES,
   composeTagName,
+  type CommandPluginDefinition,
+  type CommandPluginTypes,
+  type StandardPluginDefinition,
+  type StandardPluginTypes,
   type PluginContext,
   type PluginDefinition,
   type PluginElementWithCtx,
@@ -15,7 +20,7 @@ export const PLUGIN_ID_ATTR = "plugin-id";
 export function registerPluginWebComponent<PT extends PluginTypes>(
   pluginDefinition: PluginDefinition<PT>,
 ) {
-  const { type, id, mount } = pluginDefinition;
+  const { type, id } = pluginDefinition;
 
   const tag = composeTagName(id, type);
   if (customElements.get(tag)) {
@@ -23,13 +28,42 @@ export function registerPluginWebComponent<PT extends PluginTypes>(
     return;
   }
 
-  if (!mount || typeof mount !== "function") {
-    throw new Error(`Missing mount function in pluginDefinition of ${id}`);
-  }
+  const isCommandType =
+    type === PLUGIN_TYPES.COMMAND || type === PLUGIN_TYPES.COMMAND_PROFILATION;
 
-  setPluginInTypeRegistry(pluginDefinition, (container, ctx) =>
-    mount(container, ctx as PluginContext<PT>),
-  );
+  if (isCommandType) {
+    const commandPlugin =
+      pluginDefinition as CommandPluginDefinition<CommandPluginTypes>;
+    if (typeof commandPlugin.execute !== "function") {
+      throw new Error(`Missing execute function in command plugin ${id}`);
+    }
+    if (!commandPlugin.command || !commandPlugin.command.label) {
+      throw new Error(`Missing command descriptor in command plugin ${id}`);
+    }
+
+    setPluginInTypeRegistry(pluginDefinition, {
+      command: commandPlugin.command,
+      execute: commandPlugin.execute,
+      mount:
+        typeof commandPlugin.mount === "function"
+          ? (container: HTMLDivElement, ctx: PluginContext<PluginTypes>) =>
+              commandPlugin.mount!(
+                container,
+                ctx as PluginContext<CommandPluginTypes>,
+              )
+          : undefined,
+    });
+  } else {
+    const standardPlugin = pluginDefinition as StandardPluginDefinition;
+    const mount = standardPlugin.mount;
+    if (!mount || typeof mount !== "function") {
+      throw new Error(`Missing mount function in pluginDefinition of ${id}`);
+    }
+    setPluginInTypeRegistry(standardPlugin, {
+      mount: (container: HTMLDivElement, ctx: PluginContext<PluginTypes>) =>
+        mount(container, ctx as PluginContext<StandardPluginTypes>),
+    });
+  }
 
   class PluginElement extends HTMLElement implements PluginElementWithCtx {
     ctx!: PluginContext;
@@ -62,6 +96,9 @@ export function registerPluginWebComponent<PT extends PluginTypes>(
         throw new Error(
           `Context type mismatch: expected "${type}", got "${ctx.manifest.type}"`,
         );
+      }
+      if (!registration.mount) {
+        return;
       }
 
       this.shadow = this.shadowRoot ?? this.attachShadow({ mode: "open" });

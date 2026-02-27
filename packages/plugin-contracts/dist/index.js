@@ -20,8 +20,51 @@ const PLUGIN_TAGS_PREFIX = {
 function composeTagName(id, type) {
   return `${PLUGIN_TAGS_PREFIX[type]}-${id}`;
 }
+const COMMAND_DIALOG_OPEN_EVENT_PREFIX = "command-dialog:open";
+function assertPluginId(pluginId) {
+  if (!pluginId?.trim()) {
+    throw new Error("pluginId is required to manage command dialog events");
+  }
+}
+function getCommandDialogOpenEventName(pluginId) {
+  assertPluginId(pluginId);
+  return `${COMMAND_DIALOG_OPEN_EVENT_PREFIX}:${pluginId}`;
+}
+function createCommandDialogOpenEvent(pluginId, payload) {
+  return new CustomEvent(getCommandDialogOpenEventName(pluginId), {
+    detail: {
+      pluginId,
+      payload
+    }
+  });
+}
+function dispatchCommandDialogOpenEvent(pluginId, payload) {
+  return globalThis.dispatchEvent(
+    createCommandDialogOpenEvent(pluginId, payload)
+  );
+}
+function addCommandDialogOpenListener(pluginId, listener, options) {
+  globalThis.addEventListener(
+    getCommandDialogOpenEventName(pluginId),
+    listener,
+    options
+  );
+}
+function removeCommandDialogOpenListener(pluginId, listener, options) {
+  globalThis.removeEventListener(
+    getCommandDialogOpenEventName(pluginId),
+    listener,
+    options
+  );
+}
 export {
+  COMMAND_DIALOG_OPEN_EVENT_PREFIX,
   CONTRACT_VERSION,
   PLUGIN_TYPES,
-  composeTagName
+  addCommandDialogOpenListener,
+  composeTagName,
+  createCommandDialogOpenEvent,
+  dispatchCommandDialogOpenEvent,
+  getCommandDialogOpenEventName,
+  removeCommandDialogOpenListener
 };

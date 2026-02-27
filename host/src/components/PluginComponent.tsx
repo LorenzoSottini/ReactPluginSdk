@@ -7,6 +7,7 @@ type PluginComponentProps = {
   manifestUrl: string;
   user: HostUser;
 };
+
 export const PluginComponent: FC<PluginComponentProps> = ({
   manifestUrl,
   user,
@@ -45,7 +46,7 @@ export const PluginComponent: FC<PluginComponentProps> = ({
       disposed = true;
       if (hostElementRef.current) clearPluginMount(hostElementRef.current);
     };
-  }, [manifestUrl]);
+  }, [manifestUrl, user]);
 
   return (
     <div>

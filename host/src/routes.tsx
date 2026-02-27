@@ -2,6 +2,7 @@ import { createBrowserRouter, useParams } from "react-router";
 import App from "./App";
 import { PluginList } from "./components/PluginList";
 import { PluginComponent } from "./components/PluginComponent";
+import CommandPage from "./Pages/Command";
 import { PLUGINS_AVAILABLE } from "./pluginsList";
 
 const user = { id: "host-user-1", displayName: "Lorenzo" };
@@ -12,6 +13,10 @@ const router = createBrowserRouter([
     Component: App,
     children: [
       { index: true, Component: PluginList },
+      {
+        path: "commands",
+        Component: CommandPage,
+      },
       {
         path: ":pluginId",
         Component: () => {

@@ -14,6 +14,18 @@ export const PLUGIN_TYPES = {
 } as const;
 export type PluginTypes = keyof typeof PLUGIN_TYPES;
 
+/** Plugin dedicati a renderizzare UI e Logica isolata  */
+export type StandardPluginTypes = Extract<
+  PluginTypes,
+  "ROUTE" | "WIDGET_DESKTOP" | "WIDGET_TASK"
+>;
+
+/** Plugin dedicati a fornire Logica interconnessa alla UI dell'host e opzionalmente possono renderizzare propria UI  */
+export type CommandPluginTypes = Extract<
+  PluginTypes,
+  "COMMAND" | "COMMAND_PROFILATION"
+>;
+
 /** Mapping dei WebComponent Tag by PluginType */
 export const PLUGIN_TAGS_PREFIX = {
   ROUTE: "plugin-route",

@@ -21,6 +21,15 @@ function App() {
           >
             Plugin List
           </NavLink>
+          <NavLink
+            to="/commands"
+            end
+            className={({ isActive }) =>
+              isActive ? "font-semibold underline" : "text-muted-foreground"
+            }
+          >
+            Commands
+          </NavLink>
         </div>
         <h1> POC ReactPlugins </h1>
       </nav>
