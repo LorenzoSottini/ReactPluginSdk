@@ -1,6 +1,7 @@
 import * as angular from "angular";
 import type { PluginContext } from "@acme/plugin-contracts";
 import { META } from "./meta";
+import { PluginRootController } from "./plugin-root.controller";
 
 type Context = PluginContext<typeof META.type>;
 
@@ -9,30 +10,31 @@ function mountAngularPlugin(container: HTMLDivElement, ctx: Context) {
   const app = angular.module(appName, []);
   app.constant("pluginCtx", ctx);
 
-  class PluginRootController {
-    static $inject = ["pluginCtx"] as const;
-
-    user: Context["user"];
-    pluginName: string;
-
-    constructor(private readonly pluginCtx: Context) {
-      this.user = pluginCtx.user;
-      this.pluginName = pluginCtx.manifest.name;
-    }
-
-    showToast = () => {
-      this.pluginCtx.services.toast.show(
-        `[AngularJS] Action from ${this.pluginCtx.manifest.id}`,
-      );
-    };
-  }
-
   app.component("pluginRoot", {
     template: `
-      <section style="font-family: sans-serif; border: 1px solid #bcbcbc; border-radius: 8px; padding: 12px;">
-        <h3 style="margin: 0 0 8px 0;">{{$ctrl.pluginName}}</h3>
-        <p style="margin: 0 0 8px 0;">User: {{$ctrl.user.displayName}} ({{$ctrl.user.id}})</p>
-        <button ng-click="$ctrl.showToast()">AngularJS v1 toast</button>
+      <section style="font-family: sans-serif; border: 1px solid #ccc; border-radius: 8px; padding: 10px;">
+        <h3 style="margin: 0 0 8px 0;">{{$ctrl.manifest.name}}</h3>
+        <p style="margin: 0 0 8px 0;">Utente from Host: {{$ctrl.user.displayName}}</p>
+
+        <label>Dettagli del manifest from Host</label>
+        <ul style="text-align: left; margin: 8px 0 12px 0;">
+          <li><strong>id:</strong> {{$ctrl.manifest.id}}</li>
+          <li><strong>name:</strong> {{$ctrl.manifest.name}}</li>
+          <li><strong>type:</strong> {{$ctrl.manifest.type}}</li>
+          <li><strong>contractVersion:</strong> {{$ctrl.manifest.contractVersion}}</li>
+          <li><strong>version:</strong> {{$ctrl.manifest.version}}</li>
+        </ul>
+
+        <div style="display: flex; gap: 6px;">
+          <input
+            type="text"
+            placeholder="Notifica all'host"
+            ng-model="$ctrl.val"
+          />
+          <button ng-click="$ctrl.sendMessageToHost()" type="button">
+            Send message in console
+          </button>
+        </div>
       </section>
     `,
     controller: PluginRootController,

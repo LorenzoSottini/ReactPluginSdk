@@ -1,0 +1,17 @@
+import { FC } from "react";
+import { CommandDialogRoot, useManifest, useUser } from "@acme/plugin-react";
+import { META } from "./meta";
+
+export const PluginRoot: FC = () => {
+  const manifest = useManifest();
+  const user = useUser();
+
+  return (
+    <CommandDialogRoot pluginId={META.id} title={manifest.name}>
+      <p>Ciao {user.displayName}, questa dialog e stata generata dalla CLI.</p>
+      <form method="dialog">
+        <button type="submit">Chiudi</button>
+      </form>
+    </CommandDialogRoot>
+  );
+};

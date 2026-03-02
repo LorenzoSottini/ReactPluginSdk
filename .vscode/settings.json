@@ -6,5 +6,11 @@
   "search.exclude": {
     "**/dist/**": true,
     "**/node_modules/**": true
+  },
+  "files.associations": {
+    "*.ejs": "ejs"
+  },
+  "[ejs]": {
+    "editor.formatOnSave": false
   }
 }

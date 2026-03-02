@@ -16894,30 +16894,48 @@ const META = {
   description: "Plugin ROUTE con AngularJS",
   type: "ROUTE"
 };
+const _PluginRootController = class _PluginRootController {
+  constructor(pluginCtx) {
+    this.pluginCtx = pluginCtx;
+    this.val = "";
+    this.sendMessageToHost = () => {
+      this.pluginCtx.services.toast.show(`Hello from plugin:${this.val}`);
+    };
+    this.user = pluginCtx.user;
+    this.manifest = pluginCtx.manifest;
+  }
+};
+_PluginRootController.$inject = ["pluginCtx"];
+let PluginRootController = _PluginRootController;
 function mountAngularPlugin(container, ctx) {
   const appName = `acme.ng1.${META.id.replace(/[^a-z0-9]/gi, "_")}`;
   const app = angularExports.module(appName, []);
   app.constant("pluginCtx", ctx);
-  const _PluginRootController = class _PluginRootController {
-    constructor(pluginCtx) {
-      this.pluginCtx = pluginCtx;
-      this.showToast = () => {
-        this.pluginCtx.services.toast.show(
-          `[AngularJS] Action from ${this.pluginCtx.manifest.id}`
-        );
-      };
-      this.user = pluginCtx.user;
-      this.pluginName = pluginCtx.manifest.name;
-    }
-  };
-  _PluginRootController.$inject = ["pluginCtx"];
-  let PluginRootController = _PluginRootController;
   app.component("pluginRoot", {
     template: `
-      <section style="font-family: sans-serif; border: 1px solid #bcbcbc; border-radius: 8px; padding: 12px;">
-        <h3 style="margin: 0 0 8px 0;">{{$ctrl.pluginName}}</h3>
-        <p style="margin: 0 0 8px 0;">User: {{$ctrl.user.displayName}} ({{$ctrl.user.id}})</p>
-        <button ng-click="$ctrl.showToast()">AngularJS v1 toast</button>
+      <section style="font-family: sans-serif; border: 1px solid #ccc; border-radius: 8px; padding: 10px;">
+        <h3 style="margin: 0 0 8px 0;">{{$ctrl.manifest.name}}</h3>
+        <p style="margin: 0 0 8px 0;">Utente from Host: {{$ctrl.user.displayName}}</p>
+
+        <label>Dettagli del manifest from Host</label>
+        <ul style="text-align: left; margin: 8px 0 12px 0;">
+          <li><strong>id:</strong> {{$ctrl.manifest.id}}</li>
+          <li><strong>name:</strong> {{$ctrl.manifest.name}}</li>
+          <li><strong>type:</strong> {{$ctrl.manifest.type}}</li>
+          <li><strong>contractVersion:</strong> {{$ctrl.manifest.contractVersion}}</li>
+          <li><strong>version:</strong> {{$ctrl.manifest.version}}</li>
+        </ul>
+
+        <div style="display: flex; gap: 6px;">
+          <input
+            type="text"
+            placeholder="Notifica all'host"
+            ng-model="$ctrl.val"
+          />
+          <button ng-click="$ctrl.sendMessageToHost()" type="button">
+            Send message in console
+          </button>
+        </div>
       </section>
     `,
     controller: PluginRootController

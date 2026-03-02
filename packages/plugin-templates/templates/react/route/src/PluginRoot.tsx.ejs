@@ -1,0 +1,29 @@
+import { FC, useState } from "react";
+import { useManifest, useServices, useUser } from "@acme/plugin-react";
+
+export const PluginRoot: FC = () => {
+  const services = useServices();
+  const manifest = useManifest();
+  const user = useUser();
+
+  const [value, setValue] = useState("");
+
+  return (
+    <div style={{ padding: 10, border: "1px solid #ccc" }}>
+      <h3>{manifest.name}</h3>
+      <p>Ciao {user.displayName}, questo plugin e stato generato dalla CLI.</p>
+
+      <input
+        placeholder="Messaggio per l'host"
+        value={value}
+        onChange={(event) => setValue(event.target.value)}
+      />
+      <button
+        type="button"
+        onClick={() => services.toast.show(`Messaggio plugin: ${value}`)}
+      >
+        Invia
+      </button>
+    </div>
+  );
+};

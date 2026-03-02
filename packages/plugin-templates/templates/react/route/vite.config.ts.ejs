@@ -1,0 +1,46 @@
+import { defineConfig } from "vite";
+import { postBuildPluginManifest } from "@acme/plugin-tools";
+import PACKAGE from "./package.json";
+import { META } from "./src/meta";
+<% if (reactEnabled) { %>  import react from "@vitejs/plugin-react";  <% } %>
+const entrySource = "src/index.ts";
+
+export default defineConfig({
+  plugins: [
+    <% if (reactEnabled) { %> react(), <% } %>
+    postBuildPluginManifest({ meta: META, version: PACKAGE.version }),
+  ],
+  server: {
+    port: <%= pluginDevPort %>,
+    strictPort: true,
+    cors: {
+      origin: "<%- hostDomain %>",
+      methods: ["GET", "OPTIONS"],
+      allowedHeaders: ["Content-Type"],
+    },
+    headers: {
+      "Access-Control-Allow-Origin": "<%- hostDomain %>",
+      "Access-Control-Allow-Methods": "GET,OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type",
+    },
+  },
+  build: {
+    minify: false,
+    lib: {
+      entry: entrySource,
+      formats: ["es"],
+      fileName: "index",
+    },
+    <% if (reactEnabled && reactDependencyMode === 'peer') { %>
+    rollupOptions: {
+      external: [
+        "react",
+        "react-dom",
+        "react-dom/client",
+        "react/jsx-runtime",
+        "react/jsx-dev-runtime",
+      ],
+    },
+    <% } %>
+  },
+});
