@@ -173,3 +173,4 @@ const plugin = definePlugin({
 export {
   plugin as default
 };
+//# sourceMappingURL=index.js.map

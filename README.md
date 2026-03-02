@@ -16,7 +16,7 @@ Questo repository mostra un modello plugin in cui:
 - `packages/plugin-contracts`: tipi e costanti condivise tra host e plugin
 - `packages/plugin-react`: SDK React (`definePlugin`, hooks, provider)
 - `packages/plugin-eslint-config`: configurazione ESLint condivisa per i plugin
-- `packages/plugin-tools`: utility build-time (es. generazione `manifest.json`)
+- `packages/plugin-tools`: utility per manifest plugin in dev e build
 - `host`: applicazione host di esempio
 - `plugins/example-plugin`: plugin con React bundled
 - `plugins/example-plugin-react-peer`: plugin con React peer/external
@@ -80,23 +80,37 @@ export default definePlugin({
 });
 ```
 
-## Generazione manifest (plugin-tools)
+## Manifest plugin (plugin-tools)
 
 Per evitare incongruenze tra contract e manifest, usare il plugin Vite:
 
 ```ts
-import { postBuildPluginManifest } from "@acme/plugin-tools";
+import { pluginManifest } from "@acme/plugin-tools";
 
-postBuildPluginManifest({ meta: META, version: PACKAGE.version });
+pluginManifest({ meta: META, version: PACKAGE.version });
 ```
 
-Il tool genera `dist/manifest.json` con:
+Comportamento:
+
+- in dev espone `manifest.json` dal dev server del plugin, con `entry: "/src/index.ts"`
+- in build genera `dist/manifest.json`, con `entry: "index.js"`
+
+Esempio URL caricati dall'host:
+
+- dev: `http://localhost:5174/manifest.json`
+- build: `http://localhost:5174/dist/manifest.json`
+
+Il manifest contiene:
 
 - `id`, `name`, `description`, `type`
 - `tagName` composto da `PLUGIN_TAGS_PREFIX[type] + '-' + id`
 - `contractVersion`
 - `version`
 - `entry`
+
+Compatibilita legacy:
+
+- `postBuildPluginManifest` resta disponibile e mantiene il comportamento storico (solo post-build)
 
 ## Note per plugin React peer
 

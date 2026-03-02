@@ -1,14 +1,15 @@
 import { defineConfig } from "vite";
-import { postBuildPluginManifest } from "@acme/plugin-tools";
+import { pluginManifest } from "@acme/plugin-tools";
 import PACKAGE from "./package.json";
 import { META } from "./src/meta";
 
 const entrySource = "src/index.ts";
 
 export default defineConfig({
-  plugins: [postBuildPluginManifest({ meta: META, version: PACKAGE.version })],
+  plugins: [pluginManifest({ meta: META, version: PACKAGE.version })],
   build: {
     minify: false,
+    sourcemap: true,
     lib: {
       entry: entrySource,
       formats: ["es"],

@@ -26,11 +26,14 @@ export async function loadPluginFromManifest({
 
   // 1) Recupero il manifest
   const manifest = (await response.json()) as PluginManifest;
-  const entryUrl = new URL(manifest.entry, response.url).href;
+  const entryUrl = new URL(manifest.entry, response.url);
+  if (import.meta.env.DEV) {
+    entryUrl.searchParams.set("t", Date.now().toString());
+  }
 
   // 2) Recupero il modulo ESM che fornisce il pluginDefinition
   // Import del plugin - Il Plugin runtime si occupa di definire sulla window il WebComponent con custom tag
-  const pluginDefinition = await import(/* @vite-ignore */ entryUrl)
+  const pluginDefinition = await import(/* @vite-ignore */ entryUrl.href)
     .then((module) => module.default as unknown as PluginDefinition)
     .catch((e) => console.error(`Failed to load plugin ${manifest.id}`, e));
 

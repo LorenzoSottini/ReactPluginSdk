@@ -30,7 +30,7 @@ function getCommandDialogOpenEventName(pluginId) {
   assertPluginId(pluginId);
   return `${COMMAND_DIALOG_OPEN_EVENT_PREFIX}:${pluginId}`;
 }
-function createCommandDialogOpenEvent(pluginId, payload) {
+function _createCommandDialogOpenEvent(pluginId, payload) {
   return new CustomEvent(getCommandDialogOpenEventName(pluginId), {
     detail: {
       pluginId,
@@ -40,7 +40,7 @@ function createCommandDialogOpenEvent(pluginId, payload) {
 }
 function dispatchCommandDialogOpenEvent(pluginId, payload) {
   return globalThis.dispatchEvent(
-    createCommandDialogOpenEvent(pluginId, payload)
+    _createCommandDialogOpenEvent(pluginId, payload)
   );
 }
 function addCommandDialogOpenListener(pluginId, listener, options) {
@@ -58,12 +58,10 @@ function removeCommandDialogOpenListener(pluginId, listener, options) {
   );
 }
 export {
-  COMMAND_DIALOG_OPEN_EVENT_PREFIX,
   CONTRACT_VERSION,
   PLUGIN_TYPES,
   addCommandDialogOpenListener,
   composeTagName,
-  createCommandDialogOpenEvent,
   dispatchCommandDialogOpenEvent,
   getCommandDialogOpenEventName,
   removeCommandDialogOpenListener

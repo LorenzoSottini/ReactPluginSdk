@@ -10,7 +10,6 @@ const plugin = defineCommandPlugin({
     label: "Run example command",
   },
   async execute(ctx, commandContext) {
-    
     dispatchCommandDialogOpenEvent(META.id, {
       commandContext,
     });

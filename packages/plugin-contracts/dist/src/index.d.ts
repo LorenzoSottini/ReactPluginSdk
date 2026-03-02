@@ -7,7 +7,7 @@ export type { CustomSettings, UserSettings } from "./SettingsTypes";
 export type { PluginContext, PluginElementWithCtx } from "./ContextTypes";
 export type { PluginDefinition, MountFunction, StandardPluginDefinition, CommandPluginDefinition, } from "./DefinitionsTypes";
 export type { CommandContext, CommandResult, CommandDescriptor, CommandExecuteFor, } from "./CommandTypes";
-export { COMMAND_DIALOG_OPEN_EVENT_PREFIX, getCommandDialogOpenEventName, createCommandDialogOpenEvent, dispatchCommandDialogOpenEvent, addCommandDialogOpenListener, removeCommandDialogOpenListener, } from "./CommandDialogEventsTypes";
+export { getCommandDialogOpenEventName, dispatchCommandDialogOpenEvent, addCommandDialogOpenListener, removeCommandDialogOpenListener, } from "./CommandDialogEventsTypes";
 export type { CommandDialogEventDetail, CommandDialogOpenListener, } from "./CommandDialogEventsTypes";
 export type PluginModule = {
     default: PluginDefinition<PluginTypes>;

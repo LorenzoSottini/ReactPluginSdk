@@ -16959,3 +16959,4 @@ const plugin = {
 export {
   plugin as default
 };
+//# sourceMappingURL=index.js.map

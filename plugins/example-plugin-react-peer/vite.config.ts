@@ -2,7 +2,7 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import { META } from "./src/meta";
 import PACKAGE from "./package.json";
-import { postBuildPluginManifest } from "@acme/plugin-tools";
+import { pluginManifest } from "@acme/plugin-tools";
 
 const entrySource = "src/index.ts";
 
@@ -10,11 +10,11 @@ export default defineConfig(({ command }) => ({
   plugins: [
     ...(command === "build" ? [react()] : []),
 
-    postBuildPluginManifest({ meta: META, version: PACKAGE.version }),
+    pluginManifest({ meta: META, version: PACKAGE.version }),
   ],
   build: {
     minify: false,
-    sourcemap: false,
+    sourcemap: true,
     lib: {
       entry: entrySource,
       formats: ["es"],
