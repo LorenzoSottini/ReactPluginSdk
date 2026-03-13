@@ -7,34 +7,48 @@ import { PLUGINS_AVAILABLE } from "./pluginsList";
 
 const user = { id: "host-user-1", displayName: "Lorenzo" };
 
-const router = createBrowserRouter([
-  {
-    path: "/",
-    Component: App,
-    children: [
-      { index: true, Component: PluginList },
-      {
-        path: "commands",
-        Component: CommandPage,
-      },
-      {
-        path: ":pluginId",
-        Component: () => {
-          const params = useParams();
-          const { pluginId } = params;
-          const manifestUrl =
-            pluginId && Object.keys(PLUGINS_AVAILABLE).includes(pluginId)
-              ? PLUGINS_AVAILABLE[pluginId as keyof typeof PLUGINS_AVAILABLE]
-                  .manifestUrl
-              : null;
-          if (!manifestUrl) {
-            return <>Plugin not found for route {pluginId}</>;
-          }
-          return <PluginComponent user={user} manifestUrl={manifestUrl} />;
+const router = createBrowserRouter(
+  [
+    {
+      path: "/",
+      Component: App,
+      children: [
+        { index: true, Component: PluginList },
+        {
+          path: "commands",
+          Component: CommandPage,
         },
-      },
-    ],
-  },
-]);
+        {
+          path: "importmap",
+          Component: () => (
+            <PluginComponent
+              user={user}
+              manifestUrl={
+                "http://localhost:5173/react18/pluginSample/manifest.json"
+              }
+            />
+          ),
+        },
+        {
+          path: ":pluginId",
+          Component: () => {
+            const params = useParams();
+            const { pluginId } = params;
+            const manifestUrl =
+              pluginId && Object.keys(PLUGINS_AVAILABLE).includes(pluginId)
+                ? PLUGINS_AVAILABLE[pluginId as keyof typeof PLUGINS_AVAILABLE]
+                    .manifestUrl
+                : null;
+            if (!manifestUrl) {
+              return <>Plugin not found for route {pluginId}</>;
+            }
+            return <PluginComponent user={user} manifestUrl={manifestUrl} />;
+          },
+        },
+      ],
+    },
+  ],
+  { basename: "AcmePlugin" },
+);
 
 export default router;

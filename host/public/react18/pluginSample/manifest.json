@@ -1,0 +1,10 @@
+{
+  "id": "762d4a6f-98ec-4db5-860a-769698651e3b",
+  "name": "react18PeerScoped",
+  "description": "plugin con react18 peer fornito da host",
+  "type": "ROUTE",
+  "tagName": "plugin-route-762d4a6f-98ec-4db5-860a-769698651e3b",
+  "contractVersion": "0.1.0",
+  "version": "1.0.0",
+  "entry": "index.js"
+}

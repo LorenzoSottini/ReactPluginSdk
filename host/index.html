@@ -1,29 +1,28 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>host</title>
-    <!-- Permette all'Host di fornire react ai plugin che dichiarano react come peer dependency ed external.
-      Quando un plugin fa import React from "react", il browser carica /@id/react.
-      @id e un endpoint interno del vite dev server; in produzione serve un URL statico/CDN.
-    -->
+    <base href="BASE_URL" />
     <script type="importmap">
       {
-        "imports": {
-          "react": "/@id/react",
-          "react-dom": "/@id/react-dom",
-          "react-dom/client": "/@id/react-dom/client",
-          "react/jsx-runtime": "/@id/react/jsx-runtime",
-          "react/jsx-dev-runtime": "/@id/react/jsx-dev-runtime"
+        "scopes": {
+          "react18/pluginSample/": {
+            "react": "https://esm.sh/react@18.3.1",
+            "react-dom": "https://esm.sh/react-dom@18.3.1",
+            "react-dom/client": "https://esm.sh/react-dom@18.3.1/client",
+            "react/jsx-runtime": "https://esm.sh/react@18.3.1/jsx-runtime",
+            "react/jsx-dev-runtime": "https://esm.sh/react@18.3.1/jsx-dev-runtime"
+          }
         }
       }
     </script>
   </head>
-  <body >
+  <body>
     <div id="root"></div>
 
-    <script type="module" src="http://localhost:5173/src/main.tsx"></script>
+    <script type="module" src="./src/main.tsx"></script>
   </body>
 </html>

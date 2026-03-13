@@ -1,3 +1,4 @@
+import { version } from "react";
 import { NavLink, Outlet, useLocation, useMatches } from "react-router";
 
 function App() {
@@ -30,11 +31,23 @@ function App() {
           >
             Commands
           </NavLink>
+          <NavLink
+            to="/importmap"
+            end
+            className={({ isActive }) =>
+              isActive ? "font-semibold underline" : "text-muted-foreground"
+            }
+          >
+            Plugin importmap scoped
+          </NavLink>
         </div>
         <h1> POC ReactPlugins </h1>
       </nav>
 
       <header className="rounded-md border p-2 px-4 flex justify-between">
+        <p className="text-sm text-muted-foreground flex-1">
+          Host react: <code>{version}</code>
+        </p>
         <p className="text-sm text-muted-foreground flex-1">
           Path corrente: <code>{location.pathname}</code>
         </p>

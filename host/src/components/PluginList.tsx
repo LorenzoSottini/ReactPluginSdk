@@ -23,8 +23,8 @@ export const PluginList = () => {
               <Item key={key} asChild variant="outline">
                 <li>
                   <ItemContent>
-                    <ItemTitle>{value.manifestUrl}</ItemTitle>
-                    <ItemDescription>...</ItemDescription>
+                    <ItemTitle>{value.desc}</ItemTitle>
+                    <ItemDescription>{value.manifestUrl}</ItemDescription>
                   </ItemContent>
                   <ItemActions>
                     <ChevronRightIcon className="size-4" />
